@@ -1,5 +1,45 @@
 
 public class Estudos_independetes {
+
+//Função para trazer um relatório dos grupos existentes
+  public static void relGrupos(Arquivo produtos){
+    System.out.println("\n---RELATÓRIO DE GRUPOS CADASTRADOS---");
+
+    //Vetor para não termos repetições de grupos
+    String[] gruposUnicos = new String[100];
+    int totalDeGrupos = 0;
+    
+    //Abertura do arquivo
+    produtos.abrirLeitura();
+    String linha = produtos.lerLinha();
+
+    while (linha != null){
+      String[] dados = linha.split(";");
+      String grupoAtual = dados[2];
+
+      //Verificação se o grupo ja foi lido
+      boolean jaExiste = false;
+      for (int i = 0; i < totalDeGrupos; i++){
+        if (gruposUnicos[i].equalsIgnoreCase(grupoAtual)){
+          jaExiste = true;
+          break;
+      }
+    }
+    if (!jaExiste){
+      gruposUnicos[totalDeGrupos] = grupoAtual;
+      totalDeGrupos++;
+    }
+    linha = produtos.lerLinha();
+  }
+  produtos.fecharArquivo();
+
+  //Mostra o relatório dosgrupos que estão cadastrados
+  System.out.println("Totais de grupos: " + totalDeGrupos);
+  for (int j = 0; j < totalDeGrupos; j++){
+    System.out.println("Grupo " + (j+1) + ": " + gruposUnicos[j]);
+  }
+  System.out.println("-------------------------------------");
+}
   public static void main(String[] args) {
     Arquivo produtos = new Arquivo("Produtos.csv");
     Arquivo pedidos = new Arquivo("Pedidos.csv");
@@ -9,13 +49,16 @@ public class Estudos_independetes {
     double precoVend = 0;
     int i = 0;
 
+
     // Inicio do programa, vao perguntar a qual parte do sistema voce quer acessar.
+    do{
     i = Entrada.leiaInt(
         "Digite a opcao que voce quer acessar\n1 - Cadastro dos produtos\n2 - Pedidos.\n3 - Finalizar o programa.");
     switch (i) {
       // Cadastro de produtos.
       case (1):
         int pr = 0;
+        do{
         pr = Entrada.leiaInt(
             "1 - Cadastrar novo produto\n2 - Ajuste no cadastro\n3 - Consultar produto\n4 - Retornar ao menu principal.");
         switch (pr) {
@@ -41,7 +84,9 @@ public class Estudos_independetes {
 
           // Ajustes no cadastro.
           case (2):
+            
             int pr_aj = 0;
+            do{
             pr_aj = Entrada.leiaInt("1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
             switch (pr_aj) {
               // Editar o nome do produto.
@@ -65,18 +110,20 @@ public class Estudos_independetes {
                 System.out.println("Opcao invalida");
                 break;
             }
-            while (pr_aj != 5)
-              ;
+          }
+          while (pr_aj != 5);
+            
             break;
 
           // Consultar produto.
           case (3):
             int pr_con = 0;
+            do {
 
             pr_con = Entrada
-                .leiaInt("Escolha a forma que voce quer pesquisar\n1 - Codigo\n2 - nome\n2 - Grupo\n4 - Voltar");
+                .leiaInt("Escolha a forma que voce quer pesquisar\n1 - Codigo\n2 - nome\n3 - Grupo\n4 - Voltar");
 
-            switch (pr_con) {
+            switch (pr_con)  {
               // Pesquisa por codigo ( pelo numero de produtos que for cadastrando).
               case (1):
 
@@ -147,6 +194,7 @@ public class Estudos_independetes {
 
               // Pesquisa pelo grupo(Tres todos os produtos do grupo).
               case (3):
+                relGrupos(produtos);
 
                 String grupoBusca = Entrada.leiaString("Digite o grupo:");
 
@@ -189,8 +237,12 @@ public class Estudos_independetes {
                 break;
             }
 
-            while (pr_con != 4)
-              ;
+            }
+          
+      
+          
+            while (pr_con != 4);
+              
             break;
 
           // Finalizar aba de produtos.
@@ -203,10 +255,11 @@ public class Estudos_independetes {
             System.out.println("Opcao invalida");
             break;
         }
+      }
 
         // Esse while serve para repetir a pergunta dos produtos at? ser digitado 4.
-        while (pr != 4)
-          ;
+       while (pr != 4);
+          
         break;
 
       // Pedidos
@@ -329,7 +382,8 @@ public class Estudos_independetes {
         System.out.println("Finalizando o programa...");
         break;
     }
-    while (i != 3)
-      ;
+  }
+  while (i != 3);
+      
   }
 }
