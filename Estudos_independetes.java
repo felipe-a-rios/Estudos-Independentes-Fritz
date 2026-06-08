@@ -1,10 +1,31 @@
 
 public class Estudos_independetes {
-//Menu para deixar mais agradavel a visulalização
+  //Menu p/Janela Entrada
+  public static String menuJanela(String titulo){
+  /*int tamanhoLinha = 54;
+  int espacosEsquerda = (tamanhoLinha - titulo.length()) /2;
+  if(espacosEsquerda < 0){
+    espacosEsquerda = 0;
+  }*/
+String cabecalho = "<html><center>";
+   cabecalho += "======================================================<br>";
+   cabecalho += "<b>" + titulo +"<b><br>";
+   cabecalho += "======================================================<br>";
+   cabecalho += "<br>";
+
+  return cabecalho;
+}
+//Menu p/Terminal para deixar mais agradavel a visulalização
 public static String menu(String titulo){
-  String cabecalho = "==================================\n";
-   cabecalho += "         " + titulo +"\n";
-   cabecalho += "==================================\n";
+  int tamanhoLinha = 54;
+  int espacosEsquerda = (tamanhoLinha - titulo.length()) /2;
+  if(espacosEsquerda < 0){
+    espacosEsquerda = 0;
+  }
+
+  String cabecalho = "======================================================\n";
+   cabecalho += " ".repeat(espacosEsquerda)+ titulo +"\n";
+   cabecalho += "======================================================\n";
    cabecalho += "\n";
 
   return cabecalho;
@@ -61,15 +82,15 @@ public static String menu(String titulo){
 
     // Inicio do programa, vao perguntar a qual parte do sistema voce quer acessar.
     do{
-    i = Entrada.leiaInt(
-        "Digite a opcao que voce quer acessar\n1 - Cadastro dos produtos\n2 - Pedidos.\n3 - Finalizar o programa.");
+    i = Entrada.leiaInt(menuJanela("INICIO SISTEMA") +
+        "Digite a opcao que você quer acessar\n1 - Cadastro dos produtos\n2 - Pedidos.\n3 - Finalizar o programa.");
     switch (i) {
       // Cadastro de produtos.
       case (1):
         int pr = 0;
         do{
         pr = Entrada.leiaInt(
-            menu("PRODUTOS") + "1 - Cadastrar novo produto\n2 - Ajuste no cadastro\n3 - Consultar produto\n4 - Retornar ao menu principal.");
+            menuJanela("PRODUTOS") + "\n1 - Cadastrar novo produto\n2 - Ajuste no cadastro\n3 - Consultar produto\n4 - Retornar ao menu principal.");
         switch (pr) {
           // Cadastrar novo produto.
           case (1):
@@ -97,7 +118,7 @@ public static String menu(String titulo){
             
             int pr_aj = 0;
             do{
-            pr_aj = Entrada.leiaInt(menu("AJUSTE CADASTRO") + "1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
+            pr_aj = Entrada.leiaInt(menuJanela("AJUSTE CADASTRO") + "\n1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
             switch (pr_aj) {
               // Editar o nome do produto.
               case (1):
@@ -127,18 +148,17 @@ public static String menu(String titulo){
 
           // Consultar produto.
           case (3):
-            menu("CONSULTA PRODUTOS");
             int pr_con = 0;
             do {
 
             pr_con = Entrada
-                .leiaInt(menu("CONSULTA PRODUTOS") + "Escolha a forma que voce quer pesquisar\n1 - Codigo\n2 - nome\n3 - Grupo\n4 - Voltar");
+                .leiaInt(menuJanela("CONSULTA PRODUTOS") + "Escolha a forma que voce quer pesquisar\n1 - Codigo\n2 - nome\n3 - Grupo\n4 - Voltar");
 
             switch (pr_con)  {
               // Pesquisa por codigo ( pelo numero de produtos que for cadastrando).
               case (1):
 
-                int codigo = Entrada.leiaInt(menu("CONSULTA POR CÓDIGO")+"Digite o codigo do produto:");
+                int codigo = Entrada.leiaInt(menuJanela("CONSULTA POR CÓDIGO")+"Digite o codigo do produto:");
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
@@ -172,7 +192,7 @@ public static String menu(String titulo){
               // Pesquisa por nome.
               case (2):
 
-                String nomeBusca = Entrada.leiaString(menu("CONSULTA POR NOME")+"Digite o nome:");
+                String nomeBusca = Entrada.leiaString(menuJanela("CONSULTA POR NOME")+"Digite o nome:");
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
@@ -207,7 +227,7 @@ public static String menu(String titulo){
               case (3):
                 relGrupos(produtos);
 
-                String grupoBusca = Entrada.leiaString(menu("CONSULTA POR GRUPO")+"Digite o grupo:");
+                String grupoBusca = Entrada.leiaString(menuJanela("CONSULTA POR GRUPO")+"Digite o grupo:");
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
@@ -326,10 +346,10 @@ public static String menu(String titulo){
           } else if (!estoqueSuficiente) {
             // CORREÇÃO AQUI: Exibe a janela gráfica oficial do Java avisando a falta de
             // estoque
-            String textoAviso = menu("AVISO DE ESTOQUE INSUFICIENTE!\n\n" +
+            String textoAviso = "AVISO DE ESTOQUE INSUFICIENTE!\n\n" +
                 "Produto: " + nomeProduto + "\n" +
                 "Estoque Atual: " + estoqueAtual + " unidades.\n" +
-                "Quantidade Solicitada: " + quantDesejada + " unidades.");
+                "Quantidade Solicitada: " + quantDesejada + " unidades.";
 
             javax.swing.JOptionPane.showMessageDialog(null,
                 textoAviso,
@@ -383,7 +403,7 @@ public static String menu(String titulo){
           // Controlamos se o loop de itens continua ou para através do método existente
           // da classe Entrada
           continuarPedido = Entrada
-              .leiaInt(menu("CONTINUAR/FINALIZAR PEDIDO") + "\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
+              .leiaInt(menuJanela("CONTINUAR/FINALIZAR PEDIDO") + "\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
         }
 
         System.out.println(menu("PEDIDO FINALIZANDO PARA O CLIENTE CPF: " + cpfCliente));
