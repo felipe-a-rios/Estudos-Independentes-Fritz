@@ -1,7 +1,16 @@
 
 public class Estudos_independetes {
+//Menu para deixar mais agradavel a visulalização
+public static String menu(String titulo){
+  String cabecalho = "==================================\n";
+   cabecalho += "         " + titulo +"\n";
+   cabecalho += "==================================\n";
+   cabecalho += "\n";
 
-//Função para trazer um relatório dos grupos existentes
+  return cabecalho;
+}
+//Função para trazer um relatório dos grupos existentes, para que o usuário não fique precisando adivinhar 
+//quais estão cadastrados
   public static void relGrupos(Arquivo produtos){
     System.out.println("\n---RELATÓRIO DE GRUPOS CADASTRADOS---");
 
@@ -60,10 +69,11 @@ public class Estudos_independetes {
         int pr = 0;
         do{
         pr = Entrada.leiaInt(
-            "1 - Cadastrar novo produto\n2 - Ajuste no cadastro\n3 - Consultar produto\n4 - Retornar ao menu principal.");
+            menu("PRODUTOS") + "1 - Cadastrar novo produto\n2 - Ajuste no cadastro\n3 - Consultar produto\n4 - Retornar ao menu principal.");
         switch (pr) {
           // Cadastrar novo produto.
           case (1):
+            menu("CADASTRAR PRODUTO");
             // Parte do codigo para identificar qual o proximo dos produtos
             produtos.abrirLeitura();
             linha = produtos.lerLinha();
@@ -87,7 +97,7 @@ public class Estudos_independetes {
             
             int pr_aj = 0;
             do{
-            pr_aj = Entrada.leiaInt("1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
+            pr_aj = Entrada.leiaInt(menu("AJUSTE CADASTRO") + "1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
             switch (pr_aj) {
               // Editar o nome do produto.
               case (1):
@@ -117,17 +127,18 @@ public class Estudos_independetes {
 
           // Consultar produto.
           case (3):
+            menu("CONSULTA PRODUTOS");
             int pr_con = 0;
             do {
 
             pr_con = Entrada
-                .leiaInt("Escolha a forma que voce quer pesquisar\n1 - Codigo\n2 - nome\n3 - Grupo\n4 - Voltar");
+                .leiaInt(menu("CONSULTA PRODUTOS") + "Escolha a forma que voce quer pesquisar\n1 - Codigo\n2 - nome\n3 - Grupo\n4 - Voltar");
 
             switch (pr_con)  {
               // Pesquisa por codigo ( pelo numero de produtos que for cadastrando).
               case (1):
 
-                int codigo = Entrada.leiaInt("Digite o codigo do produto:");
+                int codigo = Entrada.leiaInt(menu("CONSULTA POR CÓDIGO")+"Digite o codigo do produto:");
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
@@ -153,7 +164,7 @@ public class Estudos_independetes {
                 produtos.fecharArquivo();
 
                 if (!encontrou) {
-                  System.out.println("Produto nao encontrado.");
+                  System.out.println(menu("PRODUTO NÂO ENCONTRADO"));
                 }
 
                 break;
@@ -161,7 +172,7 @@ public class Estudos_independetes {
               // Pesquisa por nome.
               case (2):
 
-                String nomeBusca = Entrada.leiaString("Digite o nome:");
+                String nomeBusca = Entrada.leiaString(menu("CONSULTA POR NOME")+"Digite o nome:");
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
@@ -187,7 +198,7 @@ public class Estudos_independetes {
                 produtos.fecharArquivo();
 
                 if (!achouNome) {
-                  System.out.println("Nenhum produto encontrado.");
+                  System.out.println(menu("NENHUM PRODUTO ENCONTRADO"));
                 }
 
                 break;
@@ -196,7 +207,7 @@ public class Estudos_independetes {
               case (3):
                 relGrupos(produtos);
 
-                String grupoBusca = Entrada.leiaString("Digite o grupo:");
+                String grupoBusca = Entrada.leiaString(menu("CONSULTA POR GRUPO")+"Digite o grupo:");
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
@@ -222,18 +233,18 @@ public class Estudos_independetes {
                 produtos.fecharArquivo();
 
                 if (!achouGrupo) {
-                  System.out.println("Nenhum produto encontrado.");
+                  System.out.println(menu("NENHUM PRODUTO ENCONTRADO"));
                 }
 
                 break;
 
               // Finalizar a tela de consulta
               case (4):
-                System.out.println("Voltando...");
+                System.out.println(menu("VOLTANDO"));
                 break;
 
               default:
-                System.out.println("Opcao invalida");
+                System.out.println(menu("OPÇÃO INVÁLIDA"));
                 break;
             }
 
@@ -247,12 +258,12 @@ public class Estudos_independetes {
 
           // Finalizar aba de produtos.
           case (4):
-            System.out.println("Voltando para a tela incial");
+            System.out.println(menu("VOLTANDO A TELA INICIAL"));
             break;
 
           // Identidficador para ver se a op??o ? real
           default:
-            System.out.println("Opcao invalida");
+            System.out.println(menu("OPÇÃO INVÁLIDA"));
             break;
         }
       }
@@ -264,7 +275,7 @@ public class Estudos_independetes {
 
       // Pedidos
       case (2):
-        System.out.println("--- Área de Pedidos / Vendas ---");
+        System.out.println(menu("ÁREA DE PEDIDOS / VENDAS"));
         String cpfCliente = Entrada.leiaString("Digite o CPF do cliente:");
 
         int continuarPedido = 1; // Variável de controle do laço de itens
@@ -315,10 +326,10 @@ public class Estudos_independetes {
           } else if (!estoqueSuficiente) {
             // CORREÇÃO AQUI: Exibe a janela gráfica oficial do Java avisando a falta de
             // estoque
-            String textoAviso = "AVISO DE ESTOQUE INSUFICIENTE!\n\n" +
+            String textoAviso = menu("AVISO DE ESTOQUE INSUFICIENTE!\n\n" +
                 "Produto: " + nomeProduto + "\n" +
                 "Estoque Atual: " + estoqueAtual + " unidades.\n" +
-                "Quantidade Solicitada: " + quantDesejada + " unidades.";
+                "Quantidade Solicitada: " + quantDesejada + " unidades.");
 
             javax.swing.JOptionPane.showMessageDialog(null,
                 textoAviso,
@@ -372,14 +383,14 @@ public class Estudos_independetes {
           // Controlamos se o loop de itens continua ou para através do método existente
           // da classe Entrada
           continuarPedido = Entrada
-              .leiaInt("\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
+              .leiaInt(menu("CONTINUAR/FINALIZAR PEDIDO") + "\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
         }
 
-        System.out.println("--- Pedido finalizado para o cliente CPF: " + cpfCliente + " ---");
+        System.out.println(menu("PEDIDO FINALIZANDO PARA O CLIENTE CPF: " + cpfCliente));
         break;
       // fim do programa.
       case (3):
-        System.out.println("Finalizando o programa...");
+        System.out.println(menu("FINALIZANDO O PROGRAMA..."));
         break;
     }
   }
