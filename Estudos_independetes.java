@@ -1,5 +1,20 @@
 
 public class Estudos_independetes {
+  //Função salvar no arquivo Produtos.CSV
+  public static void saveProd(String linha){
+    Arquivo produtos = new Arquivo("Produtos.csv");
+    produtos.abrirEscrita(true);
+    produtos.escreverLinha(linha);
+    produtos.fecharArquivo();
+  }
+  //Função salvar no arquivo Pedidos.CSV
+    public static void savePed(String linhaPedido){
+    Arquivo pedidos = new Arquivo("Pedidos.CSV");
+    pedidos.abrirEscrita(true);
+    pedidos.escreverLinha(linhaPedido);
+    pedidos.fecharArquivo();
+
+  }
   //Função relatório dos pedidos
   public static void relPed(Arquivo pedidos){
   int rPed, Poss1, Poss2= 0;
@@ -266,14 +281,12 @@ String cabecalho = "<html><center>";
               linha = produtos.lerLinha();
             }
             produtos.fecharArquivo();
-            produtos.abrirEscrita(true);
             nome = Entrada.leiaString("Escreva o nome do novo Produto");
             grupo = Entrada.leiaString("Escreva de qual grupo o produto se encontra ");
             estoque = Entrada.leiaInt("Escreva a quantidade inicial do estoque");
             precoVend = Entrada.leiaDouble("Escreva qual o valor de venda do produto");
             linha = codProd + ";" + nome + ";" + grupo + ";" + estoque + ";" + precoVend;
-            produtos.escreverLinha(linha);
-            produtos.fecharArquivo();
+            saveProd(linha);
             break;
 
           // Ajustes no cadastro.
@@ -344,7 +357,11 @@ String cabecalho = "<html><center>";
                   dadosCodProd[2] = linha.substring(Poss1, Poss2);
 
                   Poss1 = Poss2 + 1;
-                  dadosCodProd[3] = linha.substring(Poss1);
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosCodProd[3] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  dadosCodProd[4] = linha.substring(Poss1);
 
                   if (Integer.parseInt(dadosCodProd[0]) == codigo) {
                     System.out.println("Codigo: " + dadosCodProd[0]);
@@ -394,7 +411,11 @@ String cabecalho = "<html><center>";
                   dadosNomProd[2] = linha.substring(PossN1, PossN2);
 
                   PossN1 = PossN2 + 1;
-                  dadosNomProd[3] = linha.substring(PossN1);
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[3] = linha.substring(PossN1, PossN2);
+
+                  PossN1 = PossN2 + 1;
+                  dadosNomProd[4] = linha.substring(PossN1);
 
                   if (dadosNomProd[1].toLowerCase().contains(nomeBusca.toLowerCase())) {
                     System.out.println("Codigo: " + dadosNomProd[0]);
@@ -441,9 +462,13 @@ String cabecalho = "<html><center>";
                   PossG1 = PossG2 + 1;
                   PossG2 = linha.indexOf(';',PossG1);
                   dadosGrupProd[2] = linha.substring(PossG1, PossG2);
+
+                  PossG1 = PossG2 + 1;
+                  PossG2 = linha.indexOf(';',PossG1);
+                  dadosGrupProd[3] = linha.substring(PossG1, PossG2);
                   
                   PossG1 = PossG2 + 1;
-                  dadosGrupProd[3] = linha.substring(PossG1);
+                  dadosGrupProd[4] = linha.substring(PossG1);
 
                   if (dadosGrupProd[2].equalsIgnoreCase(grupoBusca)) {
                     System.out.println("Codigo: " + dadosGrupProd[0]);
@@ -587,11 +612,9 @@ String cabecalho = "<html><center>";
             // Se chegou aqui, o produto existe e tem estoque!
             double valorTotalItem = quantDesejada * precoUnitario;
 
-            // A) Salvar o item vendido no arquivo Pedidos.csv
-            pedidos.abrirEscrita(true);
+            // A) Salvar o item vendido no arquivo Pedidos.csv 
             String linhaPedido = cpfCliente + ";" + codProdBusca + ";" + quantDesejada + ";" + valorTotalItem;
-            pedidos.escreverLinha(linhaPedido);
-            pedidos.fecharArquivo();
+            savePed(linhaPedido);
 
             // B) Atualizar o estoque alterando o arquivo Produtos.csv usando um temporário
             Arquivo tempProdEstoque = new Arquivo("Produtos_temp.csv");
