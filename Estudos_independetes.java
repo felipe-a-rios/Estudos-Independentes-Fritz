@@ -2,7 +2,7 @@
 public class Estudos_independetes {
   //Função relatório dos pedidos
   public static void relPed(Arquivo pedidos){
-  int rPed = 0;
+  int rPed, Poss1, Poss2= 0;
   String linha = "";
   do {
     rPed = Entrada.leiaInt(menuJanela("RELATÓRIO PEDIDOS") + "Escolha a opção que você quer acessar\n1- Todos os pedidos \n2- Ped. P/Clientes \n3- Ped. P/Produto \n4- Voltar");
@@ -12,16 +12,30 @@ public class Estudos_independetes {
                 pedidos.abrirLeitura();
                 linha = pedidos.lerLinha();
                 double valorTot = 0;
+                String dadosTODOS[] = new String[4];
                 while (linha != null) {
+                  Poss1 = 0;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosTODOS[0] = linha.substring(Poss1, Poss2);
 
-                  String dados[] = linha.split(";");
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosTODOS[1] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosTODOS[2] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  dadosTODOS[3] = linha.substring(Poss1);
+
                     System.out.println(menu("TODOS OS PEDIDOS"));
-                    System.out.println("CPF: " + dados[0]);
-                    System.out.println("Cod. Produto: " + dados[1]);
-                    System.out.println("Quantidade: " + dados[2]);
-                    System.out.println("Valor Total: " + dados[3]);
+                    System.out.println("CPF: " + dadosTODOS[0]);
+                    System.out.println("Cod. Produto: " + dadosTODOS[1]);
+                    System.out.println("Quantidade: " + dadosTODOS[2]);
+                    System.out.println("Valor Total: " + dadosTODOS[3]);
                     System.out.println("====================================================== ");
-                    double valConvert = Double.parseDouble(dados[3]);
+                    double valConvert = Double.parseDouble(dadosTODOS[3]);
                     valorTot = valConvert + valorTot;
                 linha = pedidos.lerLinha();
                 }
@@ -39,22 +53,37 @@ public class Estudos_independetes {
                 linha = pedidos.lerLinha();
                 double valorTotCli= 0;
                 boolean achouCPF = false;
+                String dadosCPF[] = new String[4];
 
                 while (linha != null) {
-                  String dados[] = linha.split(";");
+                  //String dados[] = linha.split(";");
+                  Poss1 = 0;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosCPF[0] = linha.substring(Poss1, Poss2);
 
-                  if (dados[1].toLowerCase().contains(nomeBusca.toLowerCase())) {
-                    System.out.println("CPF: " + dados[0]);
-                    System.out.println("Cod. Produto: " + dados[1]);
-                    System.out.println("Quantidade: " + dados[2]);
-                    System.out.println("Valor total: " + dados[3]);
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosCPF[1] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosCPF[2] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  dadosCPF[3] = linha.substring(Poss1);
+
+                  if (dadosCPF[0].toLowerCase().contains(nomeBusca.toLowerCase())) {
+                    System.out.println(menu("PEDIDO POR CLIENTE"));
+                    System.out.println("CPF: " + dadosCPF[0]);
+                    System.out.println("Cod. Produto: " + dadosCPF[1]);
+                    System.out.println("Quantidade: " + dadosCPF[2]);
+                    System.out.println("Valor total: " + dadosCPF[3]);
                     System.out.println("====================================================== ");
-                    double valConvert = Double.parseDouble(dados[3]);
+                    double valConvert = Double.parseDouble(dadosCPF[3]);
                     valorTotCli = valConvert + valorTotCli;
                     achouCPF = true;
                   }
                   if (!achouCPF){
-                    System.out.println(menu("CPF NÃO ENCONTRADO"));
                   }
 
                   linha = pedidos.lerLinha();
@@ -64,6 +93,9 @@ public class Estudos_independetes {
                 System.out.println("");
                 System.out.println("");
                 pedidos.fecharArquivo();
+                if (!achouCPF){
+                  System.out.println(menu("CPF NÃO ENCONTRADO"));
+                  }
 
       break;
       case (3):
@@ -72,20 +104,33 @@ public class Estudos_independetes {
         pedidos.abrirLeitura();
                 linha = pedidos.lerLinha();
                 double valorTotProd = 0;
+                String dadosProd[] = new String[4];
 
                 while (linha != null) {
-                  
+                  Poss1 = 0;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosProd[0] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosProd[1] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosProd[2] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  dadosProd[3] = linha.substring(Poss1);  
 
                   
-                  String dados[] = linha.split(";");
-                    if (Integer.parseInt(dados[1]) == CodProdRel){
+                    if (Integer.parseInt(dadosProd[1]) == CodProdRel){
                     System.out.println(menu("PEDIDOS POR PRODUTO"));
-                    System.out.println("CPF: " + dados[0]);
-                    System.out.println("Cod. Produto: " + dados[1]);
-                    System.out.println("Quantidade: " + dados[2]);
-                    System.out.println("Valor Total: " + dados[3]);
+                    System.out.println("CPF: " + dadosProd[0]);
+                    System.out.println("Cod. Produto: " + dadosProd[1]);
+                    System.out.println("Quantidade: " + dadosProd[2]);
+                    System.out.println("Valor Total: " + dadosProd[3]);
                     System.out.println("====================================================== ");
-                    double valConvert = Double.parseDouble(dados[3]);
+                    double valConvert = Double.parseDouble(dadosProd[3]);
                     valorTotProd = valConvert + valorTotProd;
                 linha = pedidos.lerLinha();
                 }
@@ -99,11 +144,12 @@ public class Estudos_independetes {
       case (4):
         System.out.println(menu("VOLTANDO"));
       break;
+      default:
+        System.out.println(menu("OPÇÃO INVÁLIDA"));
+      break;
     }
   } while (rPed != 4);
   }
-
-  
   //Menu p/Janela Entrada
   public static String menuJanela(String titulo){
 String cabecalho = "<html><center>";
@@ -140,14 +186,29 @@ String cabecalho = "<html><center>";
     //Vetor para não termos repetições de grupos
     String[] gruposUnicos = new String[100];
     int totalDeGrupos = 0;
+    String dadosGrup[] = new String[5];
+    int Poss1, Poss2 = 0;
     
     //Abertura do arquivo
     produtos.abrirLeitura();
     String linha = produtos.lerLinha();
 
     while (linha != null){
-      String[] dados = linha.split(";");
-      String grupoAtual = dados[2];
+                  Poss1 = 0;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosGrup[0] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosGrup[1] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosGrup[2] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  dadosGrup[3] = linha.substring(Poss1);
+      String grupoAtual = dadosGrup[2];
 
       //Verificação se o grupo ja foi lido
       boolean jaExiste = false;
@@ -264,19 +325,33 @@ String cabecalho = "<html><center>";
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
-
+                int Poss1, Poss2 =0;
+                String dadosCodProd[] = new String[5];
                 boolean encontrou = false;
 
                 while (linha != null) {
 
-                  String dados[] = linha.split(";");
+                  Poss1 = 0;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosCodProd[0] = linha.substring(Poss1, Poss2);
 
-                  if (Integer.parseInt(dados[0]) == codigo) {
-                    System.out.println("Codigo: " + dados[0]);
-                    System.out.println("Nome: " + dados[1]);
-                    System.out.println("Grupo: " + dados[2]);
-                    System.out.println("Estoque: " + dados[3]);
-                    System.out.println("Preco: " + dados[4]);
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosCodProd[1] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  Poss2 = linha.indexOf(';',Poss1);
+                  dadosCodProd[2] = linha.substring(Poss1, Poss2);
+
+                  Poss1 = Poss2 + 1;
+                  dadosCodProd[3] = linha.substring(Poss1);
+
+                  if (Integer.parseInt(dadosCodProd[0]) == codigo) {
+                    System.out.println("Codigo: " + dadosCodProd[0]);
+                    System.out.println("Nome: " + dadosCodProd[1]);
+                    System.out.println("Grupo: " + dadosCodProd[2]);
+                    System.out.println("Estoque: " + dadosCodProd[3]);
+                    System.out.println("Preco: " + dadosCodProd[4]);
 
                     encontrou = true;
                   }
@@ -286,11 +361,13 @@ String cabecalho = "<html><center>";
 
                 produtos.fecharArquivo();
 
-                if (!encontrou) {
+                if (!encontrou) {       
                   System.out.println(menu("PRODUTO NÂO ENCONTRADO"));
                 }
+                
 
                 break;
+
 
               // Pesquisa por nome.
               case (2):
@@ -299,18 +376,32 @@ String cabecalho = "<html><center>";
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
-
+                int PossN1, PossN2 =0;
+                String dadosNomProd[] = new String[5];
                 boolean achouNome = false;
 
                 while (linha != null) {
-                  String dados[] = linha.split(";");
+                  PossN1 = 0;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[0] = linha.substring(PossN1, PossN2);
 
-                  if (dados[1].toLowerCase().contains(nomeBusca.toLowerCase())) {
-                    System.out.println("Codigo: " + dados[0]);
-                    System.out.println("Nome: " + dados[1]);
-                    System.out.println("Grupo: " + dados[2]);
-                    System.out.println("Estoque: " + dados[3]);
-                    System.out.println("Preco: " + dados[4]);
+                  Poss1 = PossN2 + 1;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[1] = linha.substring(PossN1, PossN2);
+
+                  PossN1 = PossN2 + 1;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[2] = linha.substring(PossN1, PossN2);
+
+                  PossN1 = PossN2 + 1;
+                  dadosNomProd[3] = linha.substring(PossN1);
+
+                  if (dadosNomProd[1].toLowerCase().contains(nomeBusca.toLowerCase())) {
+                    System.out.println("Codigo: " + dadosNomProd[0]);
+                    System.out.println("Nome: " + dadosNomProd[1]);
+                    System.out.println("Grupo: " + dadosNomProd[2]);
+                    System.out.println("Estoque: " + dadosNomProd[3]);
+                    System.out.println("Preco: " + dadosNomProd[4]);
 
                     achouNome = true;
                   }
@@ -334,18 +425,32 @@ String cabecalho = "<html><center>";
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
-
+                int PossG1, PossG2 = 0;
+                String dadosGrupProd[] = new String[5];
                 boolean achouGrupo = false;
 
                 while (linha != null) {
-                  String dados[] = linha.split(";");
+                  PossG1 = 0;
+                  PossG2 = linha.indexOf(';',PossG1);
+                  dadosGrupProd[0] = linha.substring(PossG1, PossG2);
 
-                  if (dados[2].equalsIgnoreCase(grupoBusca)) {
-                    System.out.println("Codigo: " + dados[0]);
-                    System.out.println("Nome: " + dados[1]);
-                    System.out.println("Grupo: " + dados[2]);
-                    System.out.println("Estoque: " + dados[3]);
-                    System.out.println("Preco: " + dados[4]);
+                  PossG1 = PossG2 + 1;
+                  PossG2 = linha.indexOf(';',PossG1);
+                  dadosGrupProd[1] = linha.substring(PossG1, PossG2);
+
+                  PossG1 = PossG2 + 1;
+                  PossG2 = linha.indexOf(';',PossG1);
+                  dadosGrupProd[2] = linha.substring(PossG1, PossG2);
+                  
+                  PossG1 = PossG2 + 1;
+                  dadosGrupProd[3] = linha.substring(PossG1);
+
+                  if (dadosGrupProd[2].equalsIgnoreCase(grupoBusca)) {
+                    System.out.println("Codigo: " + dadosGrupProd[0]);
+                    System.out.println("Nome: " + dadosGrupProd[1]);
+                    System.out.println("Grupo: " + dadosGrupProd[2]);
+                    System.out.println("Estoque: " + dadosGrupProd[3]);
+                    System.out.println("Preco: " + dadosGrupProd[4]);
 
                     achouGrupo = true;
                   }
@@ -371,10 +476,8 @@ String cabecalho = "<html><center>";
                 break;
             }
 
-            }
-          
-      
-          
+          }
+
             while (pr_con != 4);
               
             break;
@@ -426,7 +529,23 @@ String cabecalho = "<html><center>";
 
           // 1. PASSO: Buscar o produto e verificar o estoque
           while (linha != null) {
-            String[] dadosProd = linha.split(";");
+            int PossPed1, PossPed2 = 0;
+            String[] dadosProd = new String[5];
+                  PossPed1 = 0;
+                  PossPed2 = linha.indexOf(';',PossPed1);
+                  dadosProd[0] = linha.substring(PossPed1, PossPed2);
+
+                  PossPed1 = PossPed2 + 1;
+                  PossPed2 = linha.indexOf(';',PossPed1);
+                  dadosProd[1] = linha.substring(PossPed1, PossPed2);
+
+                  PossPed1 = PossPed2 + 1;
+                  PossPed2 = linha.indexOf(';',PossPed1);
+                  dadosProd[2] = linha.substring(PossPed1, PossPed2);
+                  
+                  PossPed1 = PossPed2 + 1;
+                  dadosProd[3] = linha.substring(PossPed1);
+
 
             if (Integer.parseInt(dadosProd[0]) == codProdBusca) {
               produtoExiste = true;
@@ -482,14 +601,29 @@ String cabecalho = "<html><center>";
 
             linha = produtos.lerLinha();
             while (linha != null) {
-              String[] dados = linha.split(";");
+              String[] dadosPedP = new String[5];
+              int PossPedP1, PossPedP2 = 0;
+                  PossPedP1 = 0;
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[0] = linha.substring(PossPedP1, PossPedP2);
 
-              if (Integer.parseInt(dados[0]) == codProdBusca) {
+                  PossPedP1 = PossPedP2 + 1;
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[1] = linha.substring(PossPedP1, PossPedP2);
+
+                  PossPedP1 = PossPedP2 + 1;
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[2] = linha.substring(PossPedP1, PossPedP2);
+                  
+                  PossPedP1 = PossPedP2 + 1;
+                  dadosPedP[3] = linha.substring(PossPedP1);
+
+              if (Integer.parseInt(dadosPedP[0]) == codProdBusca) {
                 int novoEstoque = estoqueAtual - quantDesejada;
-                dados[3] = String.valueOf(novoEstoque);
+                dadosPedP[3] = String.valueOf(novoEstoque);
               }
 
-              String novaLinhaProd = dados[0] + ";" + dados[1] + ";" + dados[2] + ";" + dados[3] + ";" + dados[4];
+              String novaLinhaProd = dadosPedP[0] + ";" + dadosPedP[1] + ";" + dadosPedP[2] + ";" + dadosPedP[3] + ";" + dadosPedP[4];
               tempProdEstoque.escreverLinha(novaLinhaProd);
 
               linha = produtos.lerLinha();
