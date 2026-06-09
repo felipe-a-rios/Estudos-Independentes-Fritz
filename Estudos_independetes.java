@@ -24,7 +24,10 @@ public static String menu(String titulo){
   }
 
   String cabecalho = "======================================================\n";
-   cabecalho += " ".repeat(espacosEsquerda)+ titulo +"\n";
+   for (int j = 0; j < espacosEsquerda; j++) {
+        cabecalho += " ";
+    }
+   cabecalho += titulo + "\n";
    cabecalho += "======================================================\n";
    cabecalho += "\n";
 
