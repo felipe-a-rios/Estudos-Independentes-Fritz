@@ -1,12 +1,111 @@
 
 public class Estudos_independetes {
+  //Função relatório dos pedidos
+  public static void relPed(Arquivo pedidos){
+  int rPed = 0;
+  String linha = "";
+  do {
+    rPed = Entrada.leiaInt(menuJanela("RELATÓRIO PEDIDOS") + "Escolha a opção que você quer acessar\n1- Todos os pedidos \n2- Ped. P/Clientes \n3- Ped. P/Produto \n4- Voltar");
+    switch(rPed){
+      //Todos os pedidos
+      case (1):
+                pedidos.abrirLeitura();
+                linha = pedidos.lerLinha();
+                double valorTot = 0;
+                while (linha != null) {
+
+                  String dados[] = linha.split(";");
+                    System.out.println(menu("TODOS OS PEDIDOS"));
+                    System.out.println("CPF: " + dados[0]);
+                    System.out.println("Cod. Produto: " + dados[1]);
+                    System.out.println("Quantidade: " + dados[2]);
+                    System.out.println("Valor Total: " + dados[3]);
+                    System.out.println("====================================================== ");
+                    double valConvert = Double.parseDouble(dados[3]);
+                    valorTot = valConvert + valorTot;
+                linha = pedidos.lerLinha();
+                }
+                System.out.println("Valor total: " + valorTot);
+                System.out.println("====================================================== ");
+                System.out.println("");
+                System.out.println("");
+                pedidos.fecharArquivo();
+      break;
+      //pedidos por cliente
+      case (2):
+        String nomeBusca = Entrada.leiaString(menuJanela("CONSULTA POR CLIENTE")+"Digite o CPF:");
+
+                pedidos.abrirLeitura();
+                linha = pedidos.lerLinha();
+                double valorTotCli= 0;
+                boolean achouCPF = false;
+
+                while (linha != null) {
+                  String dados[] = linha.split(";");
+
+                  if (dados[1].toLowerCase().contains(nomeBusca.toLowerCase())) {
+                    System.out.println("CPF: " + dados[0]);
+                    System.out.println("Cod. Produto: " + dados[1]);
+                    System.out.println("Quantidade: " + dados[2]);
+                    System.out.println("Valor total: " + dados[3]);
+                    System.out.println("====================================================== ");
+                    double valConvert = Double.parseDouble(dados[3]);
+                    valorTotCli = valConvert + valorTotCli;
+                    achouCPF = true;
+                  }
+                  if (!achouCPF){
+                    System.out.println(menu("CPF NÃO ENCONTRADO"));
+                  }
+
+                  linha = pedidos.lerLinha();
+                }
+                System.out.println("Valor total: " + valorTotCli);
+                System.out.println("====================================================== ");
+                System.out.println("");
+                System.out.println("");
+                pedidos.fecharArquivo();
+
+      break;
+      case (3):
+        //Pedidos por produto
+        int CodProdRel = Entrada.leiaInt(menuJanela("CONSULTA POR PRODUTO") + "Digite Código do Produto");
+        pedidos.abrirLeitura();
+                linha = pedidos.lerLinha();
+                double valorTotProd = 0;
+
+                while (linha != null) {
+                  
+
+                  
+                  String dados[] = linha.split(";");
+                    if (Integer.parseInt(dados[1]) == CodProdRel){
+                    System.out.println(menu("PEDIDOS POR PRODUTO"));
+                    System.out.println("CPF: " + dados[0]);
+                    System.out.println("Cod. Produto: " + dados[1]);
+                    System.out.println("Quantidade: " + dados[2]);
+                    System.out.println("Valor Total: " + dados[3]);
+                    System.out.println("====================================================== ");
+                    double valConvert = Double.parseDouble(dados[3]);
+                    valorTotProd = valConvert + valorTotProd;
+                linha = pedidos.lerLinha();
+                }
+                }
+                System.out.println("Valor total: " + valorTotProd);
+                System.out.println("====================================================== ");
+                System.out.println("");
+                System.out.println("");
+                pedidos.fecharArquivo();
+      break;
+      case (4):
+        System.out.println(menu("VOLTANDO"));
+      break;
+    }
+  } while (rPed != 4);
+  }
+
+  
   //Menu p/Janela Entrada
   public static String menuJanela(String titulo){
-  /*int tamanhoLinha = 54;
-  int espacosEsquerda = (tamanhoLinha - titulo.length()) /2;
-  if(espacosEsquerda < 0){
-    espacosEsquerda = 0;
-  }*/
 String cabecalho = "<html><center>";
    cabecalho += "======================================================<br>";
    cabecalho += "<b>" + titulo +"<b><br>";
@@ -16,27 +115,27 @@ String cabecalho = "<html><center>";
   return cabecalho;
 }
 //Menu p/Terminal para deixar mais agradavel a visulalização
-public static String menu(String titulo){
-  int tamanhoLinha = 54;
-  int espacosEsquerda = (tamanhoLinha - titulo.length()) /2;
-  if(espacosEsquerda < 0){
+   public static String menu(String titulo){
+    int tamanhoLinha = 54;
+    int espacosEsquerda = (tamanhoLinha - titulo.length()) /2;
+    if(espacosEsquerda < 0){
     espacosEsquerda = 0;
-  }
+    }
 
-  String cabecalho = "======================================================\n";
-   for (int j = 0; j < espacosEsquerda; j++) {
+    String cabecalho = "======================================================\n";
+    for (int j = 0; j < espacosEsquerda; j++) {
         cabecalho += " ";
     }
-   cabecalho += titulo + "\n";
-   cabecalho += "======================================================\n";
-   cabecalho += "\n";
+    cabecalho += titulo + "\n";
+    cabecalho += "======================================================\n";
+    cabecalho += "\n";
 
-  return cabecalho;
+    return cabecalho;
 }
 //Função para trazer um relatório dos grupos existentes, para que o usuário não fique precisando adivinhar 
 //quais estão cadastrados
   public static void relGrupos(Arquivo produtos){
-    System.out.println("\n---RELATÓRIO DE GRUPOS CADASTRADOS---");
+    System.out.println(menu("\nRELATÓRIO DE GRUPOS CADASTRADOS"));
 
     //Vetor para não termos repetições de grupos
     String[] gruposUnicos = new String[100];
@@ -169,6 +268,7 @@ public static String menu(String titulo){
                 boolean encontrou = false;
 
                 while (linha != null) {
+
                   String dados[] = linha.split(";");
 
                   if (Integer.parseInt(dados[0]) == codigo) {
@@ -298,7 +398,12 @@ public static String menu(String titulo){
 
       // Pedidos
       case (2):
-        System.out.println(menu("ÁREA DE PEDIDOS / VENDAS"));
+        int Ped = 0;
+        do{
+          Ped = Entrada.leiaInt(menuJanela("PEDIDOS") + "Digite a opção que você quer acessar \n1- Cadastro de Pedidos \n2- Relatório Pedidos \n3- Voltar a tela inicial");
+        switch(Ped){
+        case (1):
+        System.out.println(menu("CADASTRO PEDIDOS / VENDAS"));
         String cpfCliente = Entrada.leiaString("Digite o CPF do cliente:");
 
         int continuarPedido = 1; // Variável de controle do laço de itens
@@ -410,6 +515,15 @@ public static String menu(String titulo){
         }
 
         System.out.println(menu("PEDIDO FINALIZANDO PARA O CLIENTE CPF: " + cpfCliente));
+        break;
+        case(2):
+        relPed(pedidos);
+        break;
+        case(3):
+        System.out.println(menu("VOLTANDO A TELA INICIAL"));
+        break;
+      }
+      }while(Ped != 3);
         break;
       // fim do programa.
       case (3):
