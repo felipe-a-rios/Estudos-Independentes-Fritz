@@ -1,5 +1,40 @@
 
 public class Estudos_independetes {
+  public static String saveRel(String[][] dadosRel, int contPed){
+    Arquivo relatorio = new Arquivo("Relatório.txt");
+    String linha = "";
+    String CPF, CodProd,ValorTot,Quant, ValorTotPeds;
+    relatorio.abrirEscrita();
+    linha = ("==========================================================================================================================\n"+
+            "\n"+
+             "                                     \t\t    PEDIDOS\n"+
+            "\n"+
+             "==========================================================================================================================\n");
+    relatorio.escreverLinha(linha);
+    relatorio.fecharArquivo();
+    linha = "";
+    for(int i= 0; i < contPed - 1; i++){
+      CPF = dadosRel[i][0];
+      CodProd = dadosRel[i][1];
+      Quant = dadosRel[i][2];
+      ValorTot = dadosRel[i][3];
+    relatorio.abrirEscrita(true);
+    linha = ("CPF:" + CPF + "\n"+
+             "\n"+
+             "Código do Produto: " + CodProd +"                              Quantidade: " + Quant + " 				Valor total: " + ValorTot + "\n"+
+             "\n"+
+             "==========================================================================================================================\n"+
+             " ");
+    relatorio.escreverLinha(linha);
+    relatorio.fecharArquivo();
+    }
+    ValorTotPeds = dadosRel[contPed - 1][0];
+    linha = ("TOTAL: " + ValorTotPeds);
+    relatorio.abrirEscrita(true);
+    relatorio.escreverLinha(linha);
+    relatorio.fecharArquivo();
+    return menu("RELATÓRIO SALVO COM SUCESSO");
+  }
   //Função salvar no arquivo Produtos.CSV
   public static void saveProd(String linha){
     Arquivo produtos = new Arquivo("Produtos.csv");
@@ -19,6 +54,17 @@ public class Estudos_independetes {
   public static void relPed(Arquivo pedidos){
   int rPed, Poss1, Poss2= 0;
   String linha = "";
+  int validRelPed = 0;
+  int contPed = 0;
+
+    pedidos.abrirLeitura();
+    linha = pedidos.lerLinha();
+    while (linha != null){
+      contPed++;
+      linha = pedidos.lerLinha();
+    }
+    pedidos.fecharArquivo();
+    linha = "";
   do {
     rPed = Entrada.leiaInt(menuJanela("RELATÓRIO PEDIDOS") + "Escolha a opção que você quer acessar\n1- Todos os pedidos \n2- Ped. P/Clientes \n3- Ped. P/Produto \n4- Voltar");
     switch(rPed){
@@ -26,9 +72,13 @@ public class Estudos_independetes {
       case (1):
                 pedidos.abrirLeitura();
                 linha = pedidos.lerLinha();
+                contPed++;
                 double valorTot = 0;
+
                 String dadosTODOS[] = new String[4];
+                String dadosRel[][] = new String[contPed][4];
                 while (linha != null) {
+                  for(int i = 0; i < contPed - 1; i++){
                   Poss1 = 0;
                   Poss2 = linha.indexOf(';',Poss1);
                   dadosTODOS[0] = linha.substring(Poss1, Poss2);
@@ -53,12 +103,34 @@ public class Estudos_independetes {
                     double valConvert = Double.parseDouble(dadosTODOS[3]);
                     valorTot = valConvert + valorTot;
                 linha = pedidos.lerLinha();
+                  dadosRel[i][0] = dadosTODOS[0];
+                  dadosRel[i][1] = dadosTODOS[1];
+                  dadosRel[i][2] = dadosTODOS[2];
+                  dadosRel[i][3] = dadosTODOS[3];
+                  }
                 }
                 System.out.println("Valor total: " + valorTot);
                 System.out.println("====================================================== ");
                 System.out.println("");
                 System.out.println("");
                 pedidos.fecharArquivo();
+
+                while(validRelPed != 1 && validRelPed != 2){
+                validRelPed = Entrada.leiaInt(menuJanela("SALVAR") + "VOCÊ QUER SALVAR ESSE RELATÓRIO ? \n            1-Sim            2-Não");
+                if(validRelPed == 1){
+                  dadosRel[contPed - 1][0] = Double.toString(valorTot);
+                  saveRel(dadosRel,contPed);
+                  System.out.println(saveRel(dadosRel, contPed));
+                }
+
+                if(validRelPed == 2){
+                  break;
+                }
+
+                if(validRelPed != 1 && validRelPed != 2){
+                  System.out.println(menu("OPÇÃO INVÁLIDA"));
+                }
+              }
       break;
       //pedidos por cliente
       case (2):
