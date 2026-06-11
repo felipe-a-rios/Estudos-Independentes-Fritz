@@ -1,6 +1,6 @@
 
 public class Estudos_independetes {
-  public static String saveRel(String[][] dadosRel, int contPed){
+  /*public static String saveRel(String[][] dadosRel, int contPed){
     Arquivo relatorio = new Arquivo("Relatório.txt");
     String linha = "";
     String CPF, CodProd,ValorTot,Quant, ValorTotPeds;
@@ -34,7 +34,7 @@ public class Estudos_independetes {
     relatorio.escreverLinha(linha);
     relatorio.fecharArquivo();
     return menu("RELATÓRIO SALVO COM SUCESSO");
-  }
+  }*/
   //Função salvar no arquivo Produtos.CSV
   public static void saveProd(String linha){
     Arquivo produtos = new Arquivo("Produtos.csv");
@@ -51,7 +51,7 @@ public class Estudos_independetes {
 
   }
   //Função relatório dos pedidos
-  public static void relPed(Arquivo pedidos){
+  /*public static void relPed(Arquivo pedidos){
   int rPed, Poss1, Poss2= 0;
   String linha = "";
   int validRelPed = 0;
@@ -236,7 +236,7 @@ public class Estudos_independetes {
       break;
     }
   } while (rPed != 4);
-  }
+  }*/
   //Menu p/Janela Entrada
   public static String menuJanela(String titulo){
 String cabecalho = "<html><center>";
@@ -267,7 +267,7 @@ String cabecalho = "<html><center>";
 }
 //Função para trazer um relatório dos grupos existentes, para que o usuário não fique precisando adivinhar 
 //quais estão cadastrados
-  public static void relGrupos(Arquivo produtos){
+ /*  public static void relGrupos(Arquivo produtos){
     System.out.println(menu("\nRELATÓRIO DE GRUPOS CADASTRADOS"));
 
     //Vetor para não termos repetições de grupos
@@ -319,11 +319,11 @@ String cabecalho = "<html><center>";
     System.out.println("Grupo " + (j+1) + ": " + gruposUnicos[j]);
   }
   System.out.println("-------------------------------------");
-}
+}*/
   public static void main(String[] args) {
     Arquivo produtos = new Arquivo("Produtos.csv");
     Arquivo pedidos = new Arquivo("Pedidos.csv");
-    String linha, nome, /* cpf */grupo;
+    String linha, nome, /* cpf */grupo,nome_sis;
     int estoque = 0;
     int codProd = 1;
     double precoVend = 0;
@@ -354,10 +354,11 @@ String cabecalho = "<html><center>";
             }
             produtos.fecharArquivo();
             nome = Entrada.leiaString("Escreva o nome do novo Produto");
+            nome_sis = nome.toLowerCase();
             grupo = Entrada.leiaString("Escreva de qual grupo o produto se encontra ");
             estoque = Entrada.leiaInt("Escreva a quantidade inicial do estoque");
             precoVend = Entrada.leiaDouble("Escreva qual o valor de venda do produto");
-            linha = codProd + ";" + nome + ";" + grupo + ";" + estoque + ";" + precoVend;
+            linha = codProd + ";" + nome + ";" + grupo + ";" + estoque + ";" + precoVend + ";" + nome_sis;
             saveProd(linha);
             break;
 
@@ -396,7 +397,8 @@ String cabecalho = "<html><center>";
 
           // Consultar produto.
           case (3):
-            int pr_con = 0;
+            Relatorios.relsProd(produtos);
+            /*int pr_con = 0;
             do {
 
             pr_con = Entrada
@@ -443,6 +445,7 @@ String cabecalho = "<html><center>";
                     System.out.println("Preco: " + dadosCodProd[4]);
 
                     encontrou = true;
+                    break;
                   }
 
                   linha = produtos.lerLinha();
@@ -461,12 +464,12 @@ String cabecalho = "<html><center>";
               // Pesquisa por nome.
               case (2):
 
-                String nomeBusca = Entrada.leiaString(menuJanela("CONSULTA POR NOME")+"Digite o nome:");
+                String nomeBusca = Entrada.leiaString(menuJanela("CONSULTA POR NOME")+"Digite o nome:").toLowerCase();
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
                 int PossN1, PossN2 =0;
-                String dadosNomProd[] = new String[5];
+                String dadosNomProd[] = new String[6];
                 boolean achouNome = false;
 
                 while (linha != null) {
@@ -487,9 +490,13 @@ String cabecalho = "<html><center>";
                   dadosNomProd[3] = linha.substring(PossN1, PossN2);
 
                   PossN1 = PossN2 + 1;
-                  dadosNomProd[4] = linha.substring(PossN1);
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[4] = linha.substring(PossN1,PossN2);
+                  
+                  PossN1 = PossN2 + 1;
+                  dadosNomProd[5] = linha.substring(PossN1);
 
-                  if (dadosNomProd[1].toLowerCase().contains(nomeBusca.toLowerCase())) {
+                  if (dadosNomProd[5].contains(nomeBusca)) {
                     System.out.println("Codigo: " + dadosNomProd[0]);
                     System.out.println("Nome: " + dadosNomProd[1]);
                     System.out.println("Grupo: " + dadosNomProd[2]);
@@ -576,7 +583,7 @@ String cabecalho = "<html><center>";
           }
 
             while (pr_con != 4);
-              
+            */ 
             break;
 
           // Finalizar aba de produtos.
@@ -595,6 +602,7 @@ String cabecalho = "<html><center>";
        while (pr != 4);
           
         break;
+
 
       // Pedidos
       case (2):
@@ -650,7 +658,7 @@ String cabecalho = "<html><center>";
               estoqueAtual = Integer.parseInt(dadosProd[3]);
               precoUnitario = Double.parseDouble(dadosProd[4]);
 
-              if (estoqueAtual >= quantDesejada) {
+              if (quantDesejada > 0 && estoqueAtual >= quantDesejada) {
                 estoqueSuficiente = true;
               }
               break; // Já achou o produto, pode parar o while de busca
@@ -746,7 +754,7 @@ String cabecalho = "<html><center>";
         System.out.println(menu("PEDIDO FINALIZANDO PARA O CLIENTE CPF: " + cpfCliente));
         break;
         case(2):
-        relPed(pedidos);
+        Relatorios.relPed(pedidos);
         break;
         case(3):
         System.out.println(menu("VOLTANDO A TELA INICIAL"));
