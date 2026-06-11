@@ -719,7 +719,11 @@ String cabecalho = "<html><center>";
                   dadosPedP[2] = linha.substring(PossPedP1, PossPedP2);
                   
                   PossPedP1 = PossPedP2 + 1;
-                  dadosPedP[3] = linha.substring(PossPedP1);
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[3] = linha.substring(PossPedP1, PossPedP2);
+                  
+                  PossPedP1 = PossPedP2 + 1;
+                  dadosPedP[4] = linha.substring(PossPedP1);
 
               if (Integer.parseInt(dadosPedP[0]) == codProdBusca) {
                 int novoEstoque = estoqueAtual - quantDesejada;

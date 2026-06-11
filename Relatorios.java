@@ -189,8 +189,11 @@ public static void relPed(Arquivo pedidos){
 
 public static String saveRel(String[][] dadosRel, int contPed){
     Arquivo relatorio = new Arquivo("Relatório.txt");
+    Arquivo produtos = new Arquivo("Produtos.csv");
     String linha = "";
-    String CPF, CodProd,ValorTot,Quant, ValorTotPeds;
+    String CPF, CodProd,ValorTot,Quant, ValorTotPeds,CodArq;
+    String NomeProd = "";
+    int Poss1,Poss2 = 0;
     relatorio.abrirEscrita();
     linha = ("==========================================================================================================================\n"+
             "\n"+
@@ -205,10 +208,26 @@ public static String saveRel(String[][] dadosRel, int contPed){
       CodProd = dadosRel[i][1];
       Quant = dadosRel[i][2];
       ValorTot = dadosRel[i][3];
+    produtos.abrirLeitura();
+    linha = produtos.lerLinha();
+    while(linha != null){
+      Poss1 = 0;
+      Poss2 = linha.indexOf(';', Poss1);
+      CodArq = linha.substring(Poss1,Poss2);
+      if(CodArq.equals(dadosRel[i][1])){
+      Poss1 = Poss2 + 1;
+      Poss2 = linha.indexOf(';',Poss1);
+      NomeProd = linha.substring(Poss1, Poss2);
+      
+      break;
+      }
+      linha=produtos.lerLinha();
+    }
+    produtos.fecharArquivo();
     relatorio.abrirEscrita(true);
     linha = ("CPF:" + CPF + "\n"+
              "\n"+
-             "Código do Produto: " + CodProd +"                              Quantidade: " + Quant + " 				Valor total: " + ValorTot + "\n"+
+             "Código do Produto: " + CodProd +"     Nome Prod.:"+ NomeProd +"         Quantidade: " + Quant + " 				Valor total: " + ValorTot + "\n"+
              "\n"+
              "==========================================================================================================================\n"+
              " ");
