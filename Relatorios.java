@@ -244,8 +244,37 @@ public static String saveRelPed(String[][] dadosRelPed, int contPed){
     return Estudos_independetes.menu("RELATÓRIO SALVO COM SUCESSO");
     }
 //Função para salvar o relatório de produtos
-public static String saveRelProd(String[][] dadosRelProdN, int contProd){
-  return Estudos_independetes.menu("RELATÓRIO SALVO COM SUCESSO");
+public static String saveRelProdN(String[][] dadosRelProdN, int contProdN){
+    Arquivo relatorio = new Arquivo("Produtos-"+dadosRelProdN[0][0]+".txt");
+    String linha = "";
+    String CodProd,Nome,Grupo,Qunt,Preco;
+
+    relatorio.abrirEscrita();
+    linha = ("==========================================================================================================================\n"+
+            "\n"+
+             "                                     \t\t  PRODUTO " + dadosRelProdN[0][0] + "\n" +
+            "\n"+
+             "==========================================================================================================================\n");
+    relatorio.escreverLinha(linha);
+    relatorio.fecharArquivo();
+    linha = "";
+    for(int i= 0; i < contProdN; i++){
+      CodProd = dadosRelProdN[i][0];
+      Nome = dadosRelProdN[i][1];
+      Grupo = dadosRelProdN[i][2];
+      Qunt = dadosRelProdN[i][3];
+      Preco = dadosRelProdN[i][4];
+    relatorio.abrirEscrita(true);
+    linha = ("Código do Produto: " + CodProd + "        Nome: " + Nome + "      Grupo: " + Grupo +
+             "\n"+
+             "Quantidade: " + Qunt + " 		Preço de Venda: " + Preco + "\n"+
+             "\n"+
+             "==========================================================================================================================\n"+
+             " ");
+    relatorio.escreverLinha(linha);
+    relatorio.fecharArquivo();
+    }
+return Estudos_independetes.menu("RELATÓRIO SALVO COM SUCESSO");
 }
 //Função para trazer um relatório dos grupos existentes, para que o usuário não fique precisando adivinhar 
 //quais estão cadastrados
@@ -298,15 +327,6 @@ public static void relGrupos(Arquivo produtos){
 public static void relsProd(Arquivo produtos){
         String linha = "";
         int pr_con = 0;
-        int contProd = 0;
-        int  validRelProd = 0;
-                produtos.abrirLeitura();
-                produtos.lerLinha();
-                while(linha != null){
-                    contProd++;
-                    produtos.lerLinha();
-                  }
-                  produtos.fecharArquivo();
             do {
 
             pr_con = Entrada
@@ -317,6 +337,7 @@ public static void relsProd(Arquivo produtos){
               case (1):
 
                 int codigo = Entrada.leiaInt(Estudos_independetes.menuJanela("CONSULTA POR CÓDIGO")+"Digite o codigo do produto:");
+                
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
@@ -374,12 +395,47 @@ public static void relsProd(Arquivo produtos){
               case (2):
 
                 String nomeBusca = Entrada.leiaString(Estudos_independetes.menuJanela("CONSULTA POR NOME")+"Digite o nome:").toLowerCase();
+                int PossN1, PossN2,j =0;
+                String dadosNomProd[] = new String[6];
+                int contProdN = 0;
+                int validRelProdN = 0;
+                produtos.abrirLeitura();
+                linha = produtos.lerLinha();
+                while (linha != null) {
+                  PossN1 = 0;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[0] = linha.substring(PossN1, PossN2);
+
+                  Poss1 = PossN2 + 1;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[1] = linha.substring(PossN1, PossN2);
+
+                  PossN1 = PossN2 + 1;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[2] = linha.substring(PossN1, PossN2);
+
+                  PossN1 = PossN2 + 1;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[3] = linha.substring(PossN1, PossN2);
+
+                  PossN1 = PossN2 + 1;
+                  PossN2 = linha.indexOf(';',PossN1);
+                  dadosNomProd[4] = linha.substring(PossN1,PossN2);
+                  
+                  PossN1 = PossN2 + 1;
+                  dadosNomProd[5] = linha.substring(PossN1);
+
+                  if (dadosNomProd[5].contains(nomeBusca)) {
+                    contProdN++;
+                  }
+                  linha = produtos.lerLinha();
+                }
+                produtos.fecharArquivo();
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
-                int PossN1, PossN2,j =0;
-                String dadosNomProd[] = new String[6];
-                String dadosRelProdN[][] = new String [contProd][6];
+
+                String dadosRelProdN[][] = new String [contProdN][6];
                 boolean achouNome = false;
                 
 
@@ -409,17 +465,19 @@ public static void relsProd(Arquivo produtos){
 
                   if (dadosNomProd[5].contains(nomeBusca)) {
                     System.out.println("Codigo: " + dadosNomProd[0]);
-                    System.out.println("Nome: " + dadosNomProd[1]);
-                    System.out.println("Grupo: " + dadosNomProd[2]);
+                    System.out.println("Nome: " + dadosNomProd[2]);
+                    System.out.println("Grupo: " + dadosNomProd[1]);
                     System.out.println("Estoque: " + dadosNomProd[3]);
                     System.out.println("Preco: " + dadosNomProd[4]);
-                    j = j + 1;
+                    
                     dadosRelProdN[j][0] = dadosNomProd[0];
-                    dadosRelProdN[j][1] = dadosNomProd[1];
-                    dadosRelProdN[j][2] = dadosNomProd[3];
-                    dadosRelProdN[j][3] = dadosNomProd[4];
+                    dadosRelProdN[j][1] = dadosNomProd[2];
+                    dadosRelProdN[j][2] = dadosNomProd[1];
+                    dadosRelProdN[j][3] = dadosNomProd[3];
+                    dadosRelProdN[j][4] = dadosNomProd[4];
 
                     achouNome = true;
+                    j++;
                   }
 
                   linha = produtos.lerLinha();
@@ -430,18 +488,18 @@ public static void relsProd(Arquivo produtos){
                 if (!achouNome) {
                   System.out.println(Estudos_independetes.menu("NENHUM PRODUTO ENCONTRADO"));
                 }
-                 while(validRelProd != 1 && validRelProd != 2){
-                validRelProd = Entrada.leiaInt(Estudos_independetes.menuJanela("SALVAR") + "VOCÊ QUER SALVAR ESSE RELATÓRIO ? \n            1-Sim            2-Não");
-                if(validRelProd == 1){
-                  saveRelProd(dadosRelProdN,contProd);
-                  System.out.println(saveRelProd(dadosRelProdN, contProd));
+                 while(validRelProdN != 1 && validRelProdN != 2){
+                validRelProdN = Entrada.leiaInt(Estudos_independetes.menuJanela("SALVAR") + "VOCÊ QUER SALVAR ESSE RELATÓRIO ? \n            1-Sim            2-Não");
+                if(validRelProdN == 1){
+                  saveRelProdN(dadosRelProdN,contProdN);
+                  System.out.println(saveRelProdN(dadosRelProdN, contProdN));
                 }
 
-                if(validRelProd == 2){
+                if(validRelProdN == 2){
                   break;
                 }
 
-                if(validRelProd != 1 && validRelProd != 2){
+                if(validRelProdN != 1 && validRelProdN != 2){
                   System.out.println(Estudos_independetes.menu("OPÇÃO INVÁLIDA"));
                 }
               }

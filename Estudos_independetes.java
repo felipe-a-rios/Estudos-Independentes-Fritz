@@ -310,6 +310,6 @@ String cabecalho = "<html><center>";
     }
   }
   while (i != 3);
-      
+  System.exit(0);
   }
 }
