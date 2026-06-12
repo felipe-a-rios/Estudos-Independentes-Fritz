@@ -1,4 +1,5 @@
 public class Relatorios {
+//Função relatório de pedidos
 public static void relPed(Arquivo pedidos){
   int rPed, Poss1, Poss2= 0;
   String linha = "";
@@ -24,7 +25,7 @@ public static void relPed(Arquivo pedidos){
                 double valorTot = 0;
 
                 String dadosTODOS[] = new String[4];
-                String dadosRel[][] = new String[contPed][4];
+                String dadosRelPed[][] = new String[contPed][4];
                 while (linha != null) {
                   for(int i = 0; i < contPed - 1; i++){
                   Poss1 = 0;
@@ -51,10 +52,10 @@ public static void relPed(Arquivo pedidos){
                     double valConvert = Double.parseDouble(dadosTODOS[3]);
                     valorTot = valConvert + valorTot;
                 linha = pedidos.lerLinha();
-                  dadosRel[i][0] = dadosTODOS[0];
-                  dadosRel[i][1] = dadosTODOS[1];
-                  dadosRel[i][2] = dadosTODOS[2];
-                  dadosRel[i][3] = dadosTODOS[3];
+                  dadosRelPed[i][0] = dadosTODOS[0];
+                  dadosRelPed[i][1] = dadosTODOS[1];
+                  dadosRelPed[i][2] = dadosTODOS[2];
+                  dadosRelPed[i][3] = dadosTODOS[3];
                   }
                 }
                 System.out.println("Valor total: " + valorTot);
@@ -66,9 +67,9 @@ public static void relPed(Arquivo pedidos){
                 while(validRelPed != 1 && validRelPed != 2){
                 validRelPed = Entrada.leiaInt(Estudos_independetes.menuJanela("SALVAR") + "VOCÊ QUER SALVAR ESSE RELATÓRIO ? \n            1-Sim            2-Não");
                 if(validRelPed == 1){
-                  dadosRel[contPed - 1][0] = Double.toString(valorTot);
-                  saveRel(dadosRel,contPed);
-                  System.out.println(saveRel(dadosRel, contPed));
+                  dadosRelPed[contPed - 1][0] = Double.toString(valorTot);
+                  saveRelPed(dadosRelPed,contPed);
+                  System.out.println(saveRelPed(dadosRelPed, contPed));
                 }
 
                 if(validRelPed == 2){
@@ -90,9 +91,10 @@ public static void relPed(Arquivo pedidos){
                 boolean achouCPF = false;
                 String dadosCPF[] = new String[4];
 
-
+                //String dadosTODOSCli[] = new String[4];
+                //String dadosRelCli[][] = new String[contPed][4];
                 while (linha != null) {
-                  //String dados[] = linha.split(";");
+                  //for(int j = 0; j < contPed; j++){
                   Poss1 = 0;
                   Poss2 = linha.indexOf(';',Poss1);
                   dadosCPF[0] = linha.substring(Poss1, Poss2);
@@ -186,8 +188,8 @@ public static void relPed(Arquivo pedidos){
     }
   } while (rPed != 4);
   }
-
-public static String saveRel(String[][] dadosRel, int contPed){
+//Função de salvar o relatório
+public static String saveRelPed(String[][] dadosRelPed, int contPed){
     Arquivo relatorio = new Arquivo("Relatório.txt");
     Arquivo produtos = new Arquivo("Produtos.csv");
     String linha = "";
@@ -204,17 +206,17 @@ public static String saveRel(String[][] dadosRel, int contPed){
     relatorio.fecharArquivo();
     linha = "";
     for(int i= 0; i < contPed - 1; i++){
-      CPF = dadosRel[i][0];
-      CodProd = dadosRel[i][1];
-      Quant = dadosRel[i][2];
-      ValorTot = dadosRel[i][3];
+      CPF = dadosRelPed[i][0];
+      CodProd = dadosRelPed[i][1];
+      Quant = dadosRelPed[i][2];
+      ValorTot = dadosRelPed[i][3];
     produtos.abrirLeitura();
     linha = produtos.lerLinha();
     while(linha != null){
       Poss1 = 0;
       Poss2 = linha.indexOf(';', Poss1);
       CodArq = linha.substring(Poss1,Poss2);
-      if(CodArq.equals(dadosRel[i][1])){
+      if(CodArq.equals(dadosRelPed[i][1])){
       Poss1 = Poss2 + 1;
       Poss2 = linha.indexOf(';',Poss1);
       NomeProd = linha.substring(Poss1, Poss2);
@@ -234,14 +236,20 @@ public static String saveRel(String[][] dadosRel, int contPed){
     relatorio.escreverLinha(linha);
     relatorio.fecharArquivo();
     }
-    ValorTotPeds = dadosRel[contPed - 1][0];
+    ValorTotPeds = dadosRelPed[contPed - 1][0];
     linha = ("TOTAL: " + ValorTotPeds);
     relatorio.abrirEscrita(true);
     relatorio.escreverLinha(linha);
     relatorio.fecharArquivo();
     return Estudos_independetes.menu("RELATÓRIO SALVO COM SUCESSO");
     }
-      public static void relGrupos(Arquivo produtos){
+//Função para salvar o relatório de produtos
+public static String saveRelProd(String[][] dadosRelProdN, int contProd){
+  return Estudos_independetes.menu("RELATÓRIO SALVO COM SUCESSO");
+}
+//Função para trazer um relatório dos grupos existentes, para que o usuário não fique precisando adivinhar 
+//quais estão cadastrados
+public static void relGrupos(Arquivo produtos){
     System.out.println(Estudos_independetes.menu("\nRELATÓRIO DE GRUPOS CADASTRADOS"));
 
     //Vetor para não termos repetições de grupos
@@ -290,6 +298,15 @@ public static String saveRel(String[][] dadosRel, int contPed){
 public static void relsProd(Arquivo produtos){
         String linha = "";
         int pr_con = 0;
+        int contProd = 0;
+        int  validRelProd = 0;
+                produtos.abrirLeitura();
+                produtos.lerLinha();
+                while(linha != null){
+                    contProd++;
+                    produtos.lerLinha();
+                  }
+                  produtos.fecharArquivo();
             do {
 
             pr_con = Entrada
@@ -306,6 +323,7 @@ public static void relsProd(Arquivo produtos){
                 int Poss1, Poss2 =0;
                 String dadosCodProd[] = new String[5];
                 boolean encontrou = false;
+
 
                 while (linha != null) {
 
@@ -359,9 +377,11 @@ public static void relsProd(Arquivo produtos){
 
                 produtos.abrirLeitura();
                 linha = produtos.lerLinha();
-                int PossN1, PossN2 =0;
+                int PossN1, PossN2,j =0;
                 String dadosNomProd[] = new String[6];
+                String dadosRelProdN[][] = new String [contProd][6];
                 boolean achouNome = false;
+                
 
                 while (linha != null) {
                   PossN1 = 0;
@@ -393,6 +413,11 @@ public static void relsProd(Arquivo produtos){
                     System.out.println("Grupo: " + dadosNomProd[2]);
                     System.out.println("Estoque: " + dadosNomProd[3]);
                     System.out.println("Preco: " + dadosNomProd[4]);
+                    j = j + 1;
+                    dadosRelProdN[j][0] = dadosNomProd[0];
+                    dadosRelProdN[j][1] = dadosNomProd[1];
+                    dadosRelProdN[j][2] = dadosNomProd[3];
+                    dadosRelProdN[j][3] = dadosNomProd[4];
 
                     achouNome = true;
                   }
@@ -405,6 +430,21 @@ public static void relsProd(Arquivo produtos){
                 if (!achouNome) {
                   System.out.println(Estudos_independetes.menu("NENHUM PRODUTO ENCONTRADO"));
                 }
+                 while(validRelProd != 1 && validRelProd != 2){
+                validRelProd = Entrada.leiaInt(Estudos_independetes.menuJanela("SALVAR") + "VOCÊ QUER SALVAR ESSE RELATÓRIO ? \n            1-Sim            2-Não");
+                if(validRelProd == 1){
+                  saveRelProd(dadosRelProdN,contProd);
+                  System.out.println(saveRelProd(dadosRelProdN, contProd));
+                }
+
+                if(validRelProd == 2){
+                  break;
+                }
+
+                if(validRelProd != 1 && validRelProd != 2){
+                  System.out.println(Estudos_independetes.menu("OPÇÃO INVÁLIDA"));
+                }
+              }
 
                 break;
 
