@@ -1,26 +1,73 @@
 
 public class Estudos_independetes {
+  //Função salvar no arquivo Produtos.CSV
+  public static void saveProd(String linha){
+    Arquivo produtos = new Arquivo("Produtos.csv");
+    produtos.abrirEscrita(true);
+    produtos.escreverLinha(linha);
+    produtos.fecharArquivo();
+  }
+  //Função salvar no arquivo Pedidos.CSV
+    public static void savePed(String linhaPedido){
+    Arquivo pedidos = new Arquivo("Pedidos.CSV");
+    pedidos.abrirEscrita(true);
+    pedidos.escreverLinha(linhaPedido);
+    pedidos.fecharArquivo();
+
+  }
+  //Menu p/Janela Entrada
+  public static String menuJanela(String titulo){
+String cabecalho = "<html><center>";
+   cabecalho += "======================================================<br>";
+   cabecalho += "<b>" + titulo +"<b><br>";
+   cabecalho += "======================================================<br>";
+   cabecalho += "<br>";
+
+  return cabecalho;
+}
+//Menu p/Terminal para deixar mais agradavel a visulalização
+   public static String menu(String titulo){
+    int tamanhoLinha = 54;
+    int espacosEsquerda = (tamanhoLinha - titulo.length()) /2;
+    if(espacosEsquerda < 0){
+    espacosEsquerda = 0;
+    }
+
+    String cabecalho = "======================================================\n";
+    for (int j = 0; j < espacosEsquerda; j++) {
+        cabecalho += " ";
+    }
+    cabecalho += titulo + "\n";
+    cabecalho += "======================================================\n";
+    cabecalho += "\n";
+
+    return cabecalho;
+}
   public static void main(String[] args) {
     Arquivo produtos = new Arquivo("Produtos.csv");
     Arquivo pedidos = new Arquivo("Pedidos.csv");
-    String linha, nome, /* cpf */grupo;
+    String linha, nome, /* cpf */grupo,nome_sis;
     int estoque = 0;
     int codProd = 1;
     double precoVend = 0;
     int i = 0;
 
+
     // Inicio do programa, vao perguntar a qual parte do sistema voce quer acessar.
-    i = Entrada.leiaInt(
-        "Digite a opcao que voce quer acessar\n1 - Cadastro dos produtos\n2 - Pedidos.\n3 - Finalizar o programa.");
+    do{
+    i = Entrada.leiaInt(menuJanela("INICIO SISTEMA") +
+        "Digite a opcao que você quer acessar\n1 - Produtos\n2 - Pedidos.\n3 - Finalizar o programa.");
     switch (i) {
       // Cadastro de produtos.
       case (1):
         int pr = 0;
+        do{
         pr = Entrada.leiaInt(
-            "1 - Cadastrar novo produto\n2 - Ajuste no cadastro\n3 - Consultar produto\n4 - Retornar ao menu principal.");
+            menuJanela("PRODUTOS") + "\n1 - Cadastrar novo produto\n2 - Ajuste no cadastro\n3 - Consultar produto\n4 - Retornar ao menu principal.");
         switch (pr) {
           // Cadastrar novo produto.
           case (1):
+            menu("CADASTRAR PRODUTO");
             // Parte do codigo para identificar qual o proximo dos produtos
             produtos.abrirLeitura();
             linha = produtos.lerLinha();
@@ -29,20 +76,21 @@ public class Estudos_independetes {
               linha = produtos.lerLinha();
             }
             produtos.fecharArquivo();
-            produtos.abrirEscrita(true);
             nome = Entrada.leiaString("Escreva o nome do novo Produto");
+            nome_sis = nome.toLowerCase();
             grupo = Entrada.leiaString("Escreva de qual grupo o produto se encontra ");
             estoque = Entrada.leiaInt("Escreva a quantidade inicial do estoque");
             precoVend = Entrada.leiaDouble("Escreva qual o valor de venda do produto");
-            linha = codProd + ";" + nome + ";" + grupo + ";" + estoque + ";" + precoVend;
-            produtos.escreverLinha(linha);
-            produtos.fecharArquivo();
+            linha = codProd + ";" + nome + ";" + grupo + ";" + estoque + ";" + precoVend + ";" + nome_sis;
+            saveProd(linha);
             break;
 
           // Ajustes no cadastro.
           case (2):
+            
             int pr_aj = 0;
-            pr_aj = Entrada.leiaInt("1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
+            do{
+            pr_aj = Entrada.leiaInt(menuJanela("AJUSTE CADASTRO") + "\n1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
             switch (pr_aj) {
               // Editar o nome do produto.
               case (1):
@@ -65,153 +113,42 @@ public class Estudos_independetes {
                 System.out.println("Opcao invalida");
                 break;
             }
-            while (pr_aj != 5)
-              ;
+          }
+          while (pr_aj != 5);
+            
             break;
 
           // Consultar produto.
           case (3):
-            int pr_con = 0;
-
-            pr_con = Entrada
-                .leiaInt("Escolha a forma que voce quer pesquisar\n1 - Codigo\n2 - nome\n2 - Grupo\n4 - Voltar");
-
-            switch (pr_con) {
-              // Pesquisa por codigo ( pelo numero de produtos que for cadastrando).
-              case (1):
-
-                int codigo = Entrada.leiaInt("Digite o codigo do produto:");
-
-                produtos.abrirLeitura();
-                linha = produtos.lerLinha();
-
-                boolean encontrou = false;
-
-                while (linha != null) {
-                  String dados[] = linha.split(";");
-
-                  if (Integer.parseInt(dados[0]) == codigo) {
-                    System.out.println("Codigo: " + dados[0]);
-                    System.out.println("Nome: " + dados[1]);
-                    System.out.println("Grupo: " + dados[2]);
-                    System.out.println("Estoque: " + dados[3]);
-                    System.out.println("Preco: " + dados[4]);
-
-                    encontrou = true;
-                  }
-
-                  linha = produtos.lerLinha();
-                }
-
-                produtos.fecharArquivo();
-
-                if (!encontrou) {
-                  System.out.println("Produto nao encontrado.");
-                }
-
-                break;
-
-              // Pesquisa por nome.
-              case (2):
-
-                String nomeBusca = Entrada.leiaString("Digite o nome:");
-
-                produtos.abrirLeitura();
-                linha = produtos.lerLinha();
-
-                boolean achouNome = false;
-
-                while (linha != null) {
-                  String dados[] = linha.split(";");
-
-                  if (dados[1].toLowerCase().contains(nomeBusca.toLowerCase())) {
-                    System.out.println("Codigo: " + dados[0]);
-                    System.out.println("Nome: " + dados[1]);
-                    System.out.println("Grupo: " + dados[2]);
-                    System.out.println("Estoque: " + dados[3]);
-                    System.out.println("Preco: " + dados[4]);
-
-                    achouNome = true;
-                  }
-
-                  linha = produtos.lerLinha();
-                }
-
-                produtos.fecharArquivo();
-
-                if (!achouNome) {
-                  System.out.println("Nenhum produto encontrado.");
-                }
-
-                break;
-
-              // Pesquisa pelo grupo(Tres todos os produtos do grupo).
-              case (3):
-
-                String grupoBusca = Entrada.leiaString("Digite o grupo:");
-
-                produtos.abrirLeitura();
-                linha = produtos.lerLinha();
-
-                boolean achouGrupo = false;
-
-                while (linha != null) {
-                  String dados[] = linha.split(";");
-
-                  if (dados[2].equalsIgnoreCase(grupoBusca)) {
-                    System.out.println("Codigo: " + dados[0]);
-                    System.out.println("Nome: " + dados[1]);
-                    System.out.println("Grupo: " + dados[2]);
-                    System.out.println("Estoque: " + dados[3]);
-                    System.out.println("Preco: " + dados[4]);
-
-                    achouGrupo = true;
-                  }
-
-                  linha = produtos.lerLinha();
-                }
-
-                produtos.fecharArquivo();
-
-                if (!achouGrupo) {
-                  System.out.println("Nenhum produto encontrado.");
-                }
-
-                break;
-
-              // Finalizar a tela de consulta
-              case (4):
-                System.out.println("Voltando...");
-                break;
-
-              default:
-                System.out.println("Opcao invalida");
-                break;
-            }
-
-            while (pr_con != 4)
-              ;
+            Relatorios.relsProd(produtos);
             break;
 
           // Finalizar aba de produtos.
           case (4):
-            System.out.println("Voltando para a tela incial");
+            System.out.println(menu("VOLTANDO A TELA INICIAL"));
             break;
 
           // Identidficador para ver se a op??o ? real
           default:
-            System.out.println("Opcao invalida");
+            System.out.println(menu("OPÇÃO INVÁLIDA"));
             break;
         }
+      }
 
         // Esse while serve para repetir a pergunta dos produtos at? ser digitado 4.
-        while (pr != 4)
-          ;
+       while (pr != 4);
+          
         break;
+
 
       // Pedidos
       case (2):
-        System.out.println("--- Área de Pedidos / Vendas ---");
+        int Ped = 0;
+        do{
+          Ped = Entrada.leiaInt(menuJanela("PEDIDOS") + "Digite a opção que você quer acessar \n1- Cadastro de Pedidos \n2- Relatório Pedidos \n3- Voltar a tela inicial");
+        switch(Ped){
+        case (1):
+        System.out.println(menu("CADASTRO PEDIDOS / VENDAS"));
         String cpfCliente = Entrada.leiaString("Digite o CPF do cliente:");
 
         int continuarPedido = 1; // Variável de controle do laço de itens
@@ -234,7 +171,23 @@ public class Estudos_independetes {
 
           // 1. PASSO: Buscar o produto e verificar o estoque
           while (linha != null) {
-            String[] dadosProd = linha.split(";");
+            int PossPed1, PossPed2 = 0;
+            String[] dadosProd = new String[5];
+                  PossPed1 = 0;
+                  PossPed2 = linha.indexOf(';',PossPed1);
+                  dadosProd[0] = linha.substring(PossPed1, PossPed2);
+
+                  PossPed1 = PossPed2 + 1;
+                  PossPed2 = linha.indexOf(';',PossPed1);
+                  dadosProd[1] = linha.substring(PossPed1, PossPed2);
+
+                  PossPed1 = PossPed2 + 1;
+                  PossPed2 = linha.indexOf(';',PossPed1);
+                  dadosProd[2] = linha.substring(PossPed1, PossPed2);
+                  
+                  PossPed1 = PossPed2 + 1;
+                  dadosProd[3] = linha.substring(PossPed1);
+
 
             if (Integer.parseInt(dadosProd[0]) == codProdBusca) {
               produtoExiste = true;
@@ -242,7 +195,7 @@ public class Estudos_independetes {
               estoqueAtual = Integer.parseInt(dadosProd[3]);
               precoUnitario = Double.parseDouble(dadosProd[4]);
 
-              if (estoqueAtual >= quantDesejada) {
+              if (quantDesejada > 0 && estoqueAtual >= quantDesejada) {
                 estoqueSuficiente = true;
               }
               break; // Já achou o produto, pode parar o while de busca
@@ -276,11 +229,9 @@ public class Estudos_independetes {
             // Se chegou aqui, o produto existe e tem estoque!
             double valorTotalItem = quantDesejada * precoUnitario;
 
-            // A) Salvar o item vendido no arquivo Pedidos.csv
-            pedidos.abrirEscrita(true);
+            // A) Salvar o item vendido no arquivo Pedidos.csv 
             String linhaPedido = cpfCliente + ";" + codProdBusca + ";" + quantDesejada + ";" + valorTotalItem;
-            pedidos.escreverLinha(linhaPedido);
-            pedidos.fecharArquivo();
+            savePed(linhaPedido);
 
             // B) Atualizar o estoque alterando o arquivo Produtos.csv usando um temporário
             Arquivo tempProdEstoque = new Arquivo("Produtos_temp.csv");
@@ -290,14 +241,33 @@ public class Estudos_independetes {
 
             linha = produtos.lerLinha();
             while (linha != null) {
-              String[] dados = linha.split(";");
+              String[] dadosPedP = new String[5];
+              int PossPedP1, PossPedP2 = 0;
+                  PossPedP1 = 0;
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[0] = linha.substring(PossPedP1, PossPedP2);
 
-              if (Integer.parseInt(dados[0]) == codProdBusca) {
+                  PossPedP1 = PossPedP2 + 1;
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[1] = linha.substring(PossPedP1, PossPedP2);
+
+                  PossPedP1 = PossPedP2 + 1;
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[2] = linha.substring(PossPedP1, PossPedP2);
+                  
+                  PossPedP1 = PossPedP2 + 1;
+                  PossPedP2 = linha.indexOf(';',PossPedP1);
+                  dadosPedP[3] = linha.substring(PossPedP1, PossPedP2);
+                  
+                  PossPedP1 = PossPedP2 + 1;
+                  dadosPedP[4] = linha.substring(PossPedP1);
+
+              if (Integer.parseInt(dadosPedP[0]) == codProdBusca) {
                 int novoEstoque = estoqueAtual - quantDesejada;
-                dados[3] = String.valueOf(novoEstoque);
+                dadosPedP[3] = String.valueOf(novoEstoque);
               }
 
-              String novaLinhaProd = dados[0] + ";" + dados[1] + ";" + dados[2] + ";" + dados[3] + ";" + dados[4];
+              String novaLinhaProd = dadosPedP[0] + ";" + dadosPedP[1] + ";" + dadosPedP[2] + ";" + dadosPedP[3] + ";" + dadosPedP[4];
               tempProdEstoque.escreverLinha(novaLinhaProd);
 
               linha = produtos.lerLinha();
@@ -319,17 +289,27 @@ public class Estudos_independetes {
           // Controlamos se o loop de itens continua ou para através do método existente
           // da classe Entrada
           continuarPedido = Entrada
-              .leiaInt("\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
+              .leiaInt(menuJanela("CONTINUAR/FINALIZAR PEDIDO") + "\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
         }
 
-        System.out.println("--- Pedido finalizado para o cliente CPF: " + cpfCliente + " ---");
+        System.out.println(menu("PEDIDO FINALIZANDO PARA O CLIENTE CPF: " + cpfCliente));
+        break;
+        case(2):
+        Relatorios.relPed(pedidos);
+        break;
+        case(3):
+        System.out.println(menu("VOLTANDO A TELA INICIAL"));
+        break;
+      }
+      }while(Ped != 3);
         break;
       // fim do programa.
       case (3):
-        System.out.println("Finalizando o programa...");
+        System.out.println(menu("FINALIZANDO O PROGRAMA..."));
         break;
     }
-    while (i != 3)
-      ;
+  }
+  while (i != 3);
+  System.exit(0);
   }
 }
