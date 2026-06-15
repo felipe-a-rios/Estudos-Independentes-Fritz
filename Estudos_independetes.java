@@ -56,7 +56,7 @@ String cabecalho = "<html><center>";
     // Inicio do programa, vao perguntar a qual parte do sistema voce quer acessar.
     do{
     i = Entrada.leiaInt(menuJanela("INICIO SISTEMA") +
-        "Digite a opcao que você quer acessar\n1 - Produtos\n2 - Pedidos.\n3 - Finalizar o programa.");
+        "Digite a opcao que você quer acessar\n1 - Cadastro dos produtos\n2 - Pedidos.\n3 - Finalizar o programa.");
     switch (i) {
       // Cadastro de produtos.
       case (1):
