@@ -86,37 +86,88 @@ String cabecalho = "<html><center>";
             break;
 
           // Ajustes no cadastro.
-          case (2):
-            
-            int pr_aj = 0;
-            do{
-            pr_aj = Entrada.leiaInt(menuJanela("AJUSTE CADASTRO") + "\n1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
-            switch (pr_aj) {
-              // Editar o nome do produto.
-              case (1):
+          case(2):
+          int pr_aj_novo = 0;
+                do {
+                  pr_aj_novo = Entrada.leiaInt(menuJanela("AJUSTE CADASTRO") + "\n1 - Nome\n2 - Preco\n3 - Quantidade no estoque\n4 - Grupo\n5 - Voltar. ");
+                  
+                  if (pr_aj_novo >= 1 && pr_aj_novo <= 4) {
+                    int codAltera = Entrada.leiaInt("Digite o código do produto que deseja alterar:");
+                    
+                    Arquivo tempAj = new Arquivo("Produtos_temp.csv");
+                    produtos.abrirLeitura();
+                    tempAj.abrirEscrita(true);
+
+                    boolean achou = false;
+                    linha = produtos.lerLinha();
+                    
+                    while (linha != null) {
+                      int p1, p2;
+                      
+                      p1 = 0;
+                      p2 = linha.indexOf(';', p1);
+                      String cCodigo = linha.substring(p1, p2);
+
+                      p1 = p2 + 1;
+                      p2 = linha.indexOf(';', p1);
+                      String cNome = linha.substring(p1, p2);
+
+                      p1 = p2 + 1;
+                      p2 = linha.indexOf(';', p1);
+                      String cGrupo = linha.substring(p1, p2);
+
+                      p1 = p2 + 1;
+                      p2 = linha.indexOf(';', p1);
+                      String cEstoque = linha.substring(p1, p2);
+
+                      p1 = p2 + 1;
+                      p2 = linha.indexOf(';', p1);
+                      String cPreco = linha.substring(p1, p2);
+
+                      p1 = p2 + 1;
+                      String cNomeSis = linha.substring(p1);
+
+                      if (Integer.parseInt(cCodigo) == codAltera) {
+                        achou = true;
+                        if (pr_aj_novo == 1) {
+                          cNome = Entrada.leiaString("Digite o novo NOME do produto:");
+                          cNomeSis = cNome.toLowerCase();
+                        } else if (pr_aj_novo == 2) {
+                          cPreco = String.valueOf(Entrada.leiaDouble("Digite o novo PREÇO de venda:"));
+                        } else if (pr_aj_novo == 3) {
+                          cEstoque = String.valueOf(Entrada.leiaInt("Digite a nova QUANTIDADE em estoque:"));
+                        } else if (pr_aj_novo == 4) {
+                          cGrupo = Entrada.leiaString("Digite o novo GRUPO do produto:");
+                        }
+                      }
+
+                      String novaLinha = cCodigo + ";" + cNome + ";" + cGrupo + ";" + cEstoque + ";" + cPreco + ";" + cNomeSis;
+                      tempAj.escreverLinha(novaLinha);
+                      
+                      linha = produtos.lerLinha();
+                    }
+                    
+                    produtos.fecharArquivo();
+                    tempAj.fecharArquivo();
+
+                    produtos.excluirArquivo();
+                    tempAj.renomearArquivo("Produtos.csv");
+                    produtos = new Arquivo("Produtos.csv");
+
+                    if (achou) {
+                      javax.swing.JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso!");
+                    } else {
+                      javax.swing.JOptionPane.showMessageDialog(null, "Erro: Código do produto não encontrado!", "Aviso", javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                  }
+
+                  if (pr_aj_novo == 5) {
+                    System.out.println("Voltando a tela inicial");
+                  } else if (pr_aj_novo < 1 || pr_aj_novo > 5) {
+                    System.out.println("Opcao invalida");
+                  }
+                } while (pr_aj_novo != 5);
                 break;
-              // Editar o preco do produto.
-              case (2):
-                break;
-              // Editar estoque.
-              case (3):
-                break;
-              // Trocar o grupo do produto
-              case (4):
-                break;
-              // Votar a tela do cadastro do poduto.
-              case (5):
-                System.out.println("Voltando a tela inicial");
-                break;
-              // identificador se a opcao existe
-              default:
-                System.out.println("Opcao invalida");
-                break;
-            }
-          }
-          while (pr_aj != 5);
-            
-            break;
 
           // Consultar produto.
           case (3):
@@ -149,151 +200,172 @@ String cabecalho = "<html><center>";
         switch(Ped){
         case (1):
         System.out.println(menu("CADASTRO PEDIDOS / VENDAS"));
-        String cpfCliente = Entrada.leiaString("Digite o CPF do cliente:");
-
-        int continuarPedido = 1; // Variável de controle do laço de itens
-
-        // LAÇO PRINCIPAL DO PEDIDO: Permite incluir vários itens para o mesmo CPF
-        while (continuarPedido == 1) {
-          int codProdBusca = Entrada.leiaInt("Digite o código do produto:");
-          int quantDesejada = Entrada.leiaInt("Digite a quantidade desejada:");
-
-          // Abrimos o arquivo de produtos para verificar a existência e o estoque
-          produtos.abrirLeitura();
-
-          linha = produtos.lerLinha();
-          boolean produtoExiste = false;
-          boolean estoqueSuficiente = false;
-
-          String nomeProduto = "";
-          int estoqueAtual = 0;
-          double precoUnitario = 0;
-
-          // 1. PASSO: Buscar o produto e verificar o estoque
+          
+          // --- GERAÇÃO DO CÓDIGO DO PEDIDO ---
+          // Lemos o arquivo Pedidos.csv para descobrir qual foi o último código gerado.
+          int codPedidoAtual = 1;
+          pedidos.abrirLeitura();
+          linha = pedidos.lerLinha();
           while (linha != null) {
-            int PossPed1, PossPed2 = 0;
-            String[] dadosProd = new String[5];
-                  PossPed1 = 0;
-                  PossPed2 = linha.indexOf(';',PossPed1);
-                  dadosProd[0] = linha.substring(PossPed1, PossPed2);
-
-                  PossPed1 = PossPed2 + 1;
-                  PossPed2 = linha.indexOf(';',PossPed1);
-                  dadosProd[1] = linha.substring(PossPed1, PossPed2);
-
-                  PossPed1 = PossPed2 + 1;
-                  PossPed2 = linha.indexOf(';',PossPed1);
-                  dadosProd[2] = linha.substring(PossPed1, PossPed2);
-                  
-                  PossPed1 = PossPed2 + 1;
-                  dadosProd[3] = linha.substring(PossPed1);
-
-
-            if (Integer.parseInt(dadosProd[0]) == codProdBusca) {
-              produtoExiste = true;
-              nomeProduto = dadosProd[1];
-              estoqueAtual = Integer.parseInt(dadosProd[3]);
-              precoUnitario = Double.parseDouble(dadosProd[4]);
-
-              if (quantDesejada > 0 && estoqueAtual >= quantDesejada) {
-                estoqueSuficiente = true;
+              int p1 = 0;
+              int p2 = linha.indexOf(';', p1);
+              if (p2 != -1) {
+                  String codStr = linha.substring(p1, p2);
+                  try {
+                      int codLido = Integer.parseInt(codStr);
+                      // Se o código lido for maior ou igual, o nosso próximo código deve ser maior
+                      if (codLido >= codPedidoAtual) {
+                          codPedidoAtual = codLido + 1;
+                      }
+                  } catch (Exception e) {
+                      // Ignora linhas formatadas incorretamente
+                  }
               }
-              break; // Já achou o produto, pode parar o while de busca
-            }
-            linha = produtos.lerLinha();
+              linha = pedidos.lerLinha();
           }
-          produtos.fecharArquivo();
+          pedidos.fecharArquivo();
+          // -----------------------------------
 
-          // 2. PASSO: Processar o item atual se tudo estiver correto
-          if (!produtoExiste) {
-            // Exibe janela gráfica nativa informando que o produto não existe
-            javax.swing.JOptionPane.showMessageDialog(null,
-                "Erro: Produto não encontrado!",
-                "Aviso do Sistema",
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+          String cpfCliente = Entrada.leiaString("Digite o CPF do cliente:");
+          int continuarPedido = 1; // Variável de controle do laço de itens
 
-          } else if (!estoqueSuficiente) {
-            // CORREÇÃO AQUI: Exibe a janela gráfica oficial do Java avisando a falta de
-            // estoque
-            String textoAviso = "AVISO DE ESTOQUE INSUFICIENTE!\n\n" +
-                "Produto: " + nomeProduto + "\n" +
-                "Estoque Atual: " + estoqueAtual + " unidades.\n" +
-                "Quantidade Solicitada: " + quantDesejada + " unidades.";
+          // LAÇO PRINCIPAL DO PEDIDO: Permite incluir vários itens sob o mesmo Código de Pedido
+          while (continuarPedido == 1) {
+            int codProdBusca = Entrada.leiaInt("Digite o código do produto:");
+            int quantDesejada = Entrada.leiaInt("Digite a quantidade desejada:");
 
-            javax.swing.JOptionPane.showMessageDialog(null,
-                textoAviso,
-                "Controle de Estoque",
-                javax.swing.JOptionPane.WARNING_MESSAGE);
-
-          } else {
-            // Se chegou aqui, o produto existe e tem estoque!
-            double valorTotalItem = quantDesejada * precoUnitario;
-
-            // A) Salvar o item vendido no arquivo Pedidos.csv 
-            String linhaPedido = cpfCliente + ";" + codProdBusca + ";" + quantDesejada + ";" + valorTotalItem;
-            savePed(linhaPedido);
-
-            // B) Atualizar o estoque alterando o arquivo Produtos.csv usando um temporário
-            Arquivo tempProdEstoque = new Arquivo("Produtos_temp.csv");
-
+            // Abrimos o arquivo de produtos para verificar a existência e o estoque
             produtos.abrirLeitura();
-            tempProdEstoque.abrirEscrita(true);
-
             linha = produtos.lerLinha();
+            boolean produtoExiste = false;
+            boolean estoqueSuficiente = false;
+
+            String nomeProduto = "";
+            int estoqueAtual = 0;
+            double precoUnitario = 0;
+
+            // 1. PASSO: Buscar o produto e verificar o estoque
             while (linha != null) {
-              String[] dadosPedP = new String[5];
-              int PossPedP1, PossPedP2 = 0;
-                  PossPedP1 = 0;
-                  PossPedP2 = linha.indexOf(';',PossPedP1);
-                  dadosPedP[0] = linha.substring(PossPedP1, PossPedP2);
+              int PossPed1, PossPed2 = 0;
+              String[] dadosProd = new String[5];
+              
+              PossPed1 = 0;
+              PossPed2 = linha.indexOf(';', PossPed1);
+              dadosProd[0] = linha.substring(PossPed1, PossPed2);
 
-                  PossPedP1 = PossPedP2 + 1;
-                  PossPedP2 = linha.indexOf(';',PossPedP1);
-                  dadosPedP[1] = linha.substring(PossPedP1, PossPedP2);
+              PossPed1 = PossPed2 + 1;
+              PossPed2 = linha.indexOf(';', PossPed1);
+              dadosProd[1] = linha.substring(PossPed1, PossPed2);
 
-                  PossPedP1 = PossPedP2 + 1;
-                  PossPedP2 = linha.indexOf(';',PossPedP1);
-                  dadosPedP[2] = linha.substring(PossPedP1, PossPedP2);
-                  
-                  PossPedP1 = PossPedP2 + 1;
-                  PossPedP2 = linha.indexOf(';',PossPedP1);
-                  dadosPedP[3] = linha.substring(PossPedP1, PossPedP2);
-                  
-                  PossPedP1 = PossPedP2 + 1;
-                  dadosPedP[4] = linha.substring(PossPedP1);
+              PossPed1 = PossPed2 + 1;
+              PossPed2 = linha.indexOf(';', PossPed1);
+              dadosProd[2] = linha.substring(PossPed1, PossPed2);
+                    
+              PossPed1 = PossPed2 + 1;
+              PossPed2 = linha.indexOf(';', PossPed1);
+              dadosProd[3] = linha.substring(PossPed1, PossPed2);
 
-              if (Integer.parseInt(dadosPedP[0]) == codProdBusca) {
-                int novoEstoque = estoqueAtual - quantDesejada;
-                dadosPedP[3] = String.valueOf(novoEstoque);
+              PossPed1 = PossPed2 + 1;
+              dadosProd[4] = linha.substring(PossPed1);
+
+              if (Integer.parseInt(dadosProd[0]) == codProdBusca) {
+                produtoExiste = true;
+                nomeProduto = dadosProd[1];
+                estoqueAtual = Integer.parseInt(dadosProd[3]);
+                precoUnitario = Double.parseDouble(dadosProd[4]);
+
+                if (quantDesejada > 0 && estoqueAtual >= quantDesejada) {
+                  estoqueSuficiente = true;
+                }
+                break; // Já achou o produto, pode parar o while de busca
               }
-
-              String novaLinhaProd = dadosPedP[0] + ";" + dadosPedP[1] + ";" + dadosPedP[2] + ";" + dadosPedP[3] + ";" + dadosPedP[4];
-              tempProdEstoque.escreverLinha(novaLinhaProd);
-
               linha = produtos.lerLinha();
             }
             produtos.fecharArquivo();
-            tempProdEstoque.fecharArquivo();
 
-            // Substitui com segurança o arquivo de produtos
-            produtos.excluirArquivo();
-            tempProdEstoque.renomearArquivo("Produtos.csv");
+            // 2. PASSO: Processar o item atual se tudo estiver correto
+            if (!produtoExiste) {
+              javax.swing.JOptionPane.showMessageDialog(null,
+                  "Erro: Produto não encontrado!",
+                  "Aviso do Sistema",
+                  javax.swing.JOptionPane.ERROR_MESSAGE);
 
-            // Reinicializa a variável para que a próxima leitura funcione perfeitamente
-            produtos = new Arquivo("Produtos.csv");
+            } else if (!estoqueSuficiente) {
+              String textoAviso = "AVISO DE ESTOQUE INSUFICIENTE!\n\n" +
+                  "Produto: " + nomeProduto + "\n" +
+                  "Estoque Atual: " + estoqueAtual + " unidades.\n" +
+                  "Quantidade Solicitada: " + quantDesejada + " unidades.";
 
-            System.out.println(
-                "Item \"" + nomeProduto + "\" adicionado ao pedido com sucesso! Subtotal: R$ " + valorTotalItem);
+              javax.swing.JOptionPane.showMessageDialog(null,
+                  textoAviso,
+                  "Controle de Estoque",
+                  javax.swing.JOptionPane.WARNING_MESSAGE);
+
+            } else {
+              // Se chegou aqui, o produto existe e tem estoque!
+              double valorTotalItem = quantDesejada * precoUnitario;
+
+              // A) Salvar o item vendido no arquivo Pedidos.csv NO NOVO FORMATO (Com CodPedido no Início)
+              String linhaPedido = codPedidoAtual + ";" + cpfCliente + ";" + codProdBusca + ";" + quantDesejada + ";" + valorTotalItem;
+              savePed(linhaPedido);
+
+              // B) Atualizar o estoque alterando o arquivo Produtos.csv usando um temporário
+              Arquivo tempProdEstoque = new Arquivo("Produtos_temp.csv");
+
+              produtos.abrirLeitura();
+              tempProdEstoque.abrirEscrita(true);
+
+              linha = produtos.lerLinha();
+              while (linha != null) {
+                String[] dadosPedP = new String[5];
+                int PossPedP1, PossPedP2 = 0;
+                
+                PossPedP1 = 0;
+                PossPedP2 = linha.indexOf(';', PossPedP1);
+                dadosPedP[0] = linha.substring(PossPedP1, PossPedP2);
+
+                PossPedP1 = PossPedP2 + 1;
+                PossPedP2 = linha.indexOf(';', PossPedP1);
+                dadosPedP[1] = linha.substring(PossPedP1, PossPedP2);
+
+                PossPedP1 = PossPedP2 + 1;
+                PossPedP2 = linha.indexOf(';', PossPedP1);
+                dadosPedP[2] = linha.substring(PossPedP1, PossPedP2);
+                    
+                PossPedP1 = PossPedP2 + 1;
+                PossPedP2 = linha.indexOf(';', PossPedP1);
+                dadosPedP[3] = linha.substring(PossPedP1, PossPedP2);
+                    
+                PossPedP1 = PossPedP2 + 1;
+                dadosPedP[4] = linha.substring(PossPedP1);
+
+                if (Integer.parseInt(dadosPedP[0]) == codProdBusca) {
+                  int novoEstoque = estoqueAtual - quantDesejada;
+                  dadosPedP[3] = String.valueOf(novoEstoque);
+                }
+
+                String novaLinhaProd = dadosPedP[0] + ";" + dadosPedP[1] + ";" + dadosPedP[2] + ";" + dadosPedP[3] + ";" + dadosPedP[4];
+                tempProdEstoque.escreverLinha(novaLinhaProd);
+
+                linha = produtos.lerLinha();
+              }
+              produtos.fecharArquivo();
+              tempProdEstoque.fecharArquivo();
+
+              // Substitui com segurança o arquivo de produtos
+              produtos.excluirArquivo();
+              tempProdEstoque.renomearArquivo("Produtos.csv");
+              produtos = new Arquivo("Produtos.csv");
+
+              System.out.println(menu(
+                  "Item \"" + nomeProduto + "\" adicionado ao Pedido Nº " + codPedidoAtual + " com sucesso! Subtotal do item: R$ " + valorTotalItem));
+            }
+
+            continuarPedido = Entrada.leiaInt(menuJanela("CONTINUAR/FINALIZAR PEDIDO") + "\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
           }
 
-          // Controlamos se o loop de itens continua ou para através do método existente
-          // da classe Entrada
-          continuarPedido = Entrada
-              .leiaInt(menuJanela("CONTINUAR/FINALIZAR PEDIDO") + "\nDeseja incluir mais um item neste pedido?\n1 - Sim\n2 - Não (Encerrar Pedido)");
-        }
-
-        System.out.println(menu("PEDIDO FINALIZANDO PARA O CLIENTE CPF: " + cpfCliente));
-        break;
+          System.out.println(menu("PEDIDO Nº " + codPedidoAtual + " FINALIZADO PARA O CLIENTE CPF: " + cpfCliente));
+          break;
         case(2):
         Relatorios.relPed(pedidos);
         break;
